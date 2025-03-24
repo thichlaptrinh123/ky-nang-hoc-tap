@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc nghiệm DISC</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .question {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h2>Trắc nghiệm DISC</h2>
+    <form id="discTest">
+        <div class="question">
+            <p>Bạn thường phản ứng thế nào khi có vấn đề cần giải quyết?</p>
+            <label><input type="radio" name="q1" value="D"> Quyết đoán, đưa ra giải pháp nhanh</label><br>
+            <label><input type="radio" name="q1" value="I"> Thảo luận với người khác</label><br>
+            <label><input type="radio" name="q1" value="S"> Kiên nhẫn, xem xét kỹ</label><br>
+            <label><input type="radio" name="q1" value="C"> Phân tích, tìm hiểu sâu</label>
+        </div>
+        
+        <div class="question">
+            <p>Bạn thích làm việc theo phong cách nào?</p>
+            <label><input type="radio" name="q2" value="D"> Lãnh đạo, chủ động</label><br>
+            <label><input type="radio" name="q2" value="I"> Sáng tạo, giao tiếp nhiều</label><br>
+            <label><input type="radio" name="q2" value="S"> Hỗ trợ nhóm, ổn định</label><br>
+            <label><input type="radio" name="q2" value="C"> Chi tiết, cẩn thận</label>
+        </div>
+        
+        <button type="button" onclick="calculateResult()">Xem kết quả</button>
+    </form>
+    <h3 id="result"></h3>
+
+    <script>
+        function calculateResult() {
+            let scores = { D: 0, I: 0, S: 0, C: 0 };
+            let answers = document.querySelectorAll('input[type=radio]:checked');
+            
+            answers.forEach(answer => {
+                scores[answer.value]++;
+            });
+            
+            let maxType = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+            let resultText = {
+                D: "Bạn thuộc nhóm D: Quyết đoán, mạnh mẽ.",
+                I: "Bạn thuộc nhóm I: Hòa đồng, sáng tạo.",
+                S: "Bạn thuộc nhóm S: Ổn định, hỗ trợ.",
+                C: "Bạn thuộc nhóm C: Phân tích, chính xác."
+            };
+            
+            document.getElementById("result").innerText = resultText[maxType];
+        }
+    </script>
+</body>
+</html>
