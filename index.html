@@ -1,82 +1,87 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trắc nghiệm DISC</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: auto;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        .question {
-            background: white;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        }
-        button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background: #28a745;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
-        }
-        button:hover {
-            background: #218838;
-        }
-    </style>
+    <title>Trang web trắc nghiệm</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h2>Trắc nghiệm DISC</h2>
-    <form id="discTest">
-        <div class="question">
-            <p>Bạn thường phản ứng thế nào khi có vấn đề cần giải quyết?</p>
-            <label><input type="radio" name="q1" value="D"> Quyết đoán, đưa ra giải pháp nhanh</label><br>
-            <label><input type="radio" name="q1" value="I"> Thảo luận với người khác</label><br>
-            <label><input type="radio" name="q1" value="S"> Kiên nhẫn, xem xét kỹ</label><br>
-            <label><input type="radio" name="q1" value="C"> Phân tích, tìm hiểu sâu</label>
+    <header>
+        <img src="img/logo.png" alt="Logo">
+        <nav>
+            <ul class="menu">
+                <li><a href="#">Trang chủ</a></li>
+                <li>
+                    <a href="#">Bài test tâm lý</a>
+                    <ul class="submenu">
+                        <li><a href="#">Bài test MBTI</a></li>
+                        <li><a href="#">Bài test DISC</a></li>
+                        <li><a href="#">Bài test HOLLAND</a></li>
+                        <li><a href="#">Bài test BIG FIVE</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">Bài test trí tuệ & cảm xúc</a>
+                    <ul class="submenu">
+                        <li><a href="#">Bài test IQ</a></li>
+                        <li><a href="#">Bài test EQ</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Bài viết</a></li>
+                <li><a href="#">Đăng nhập</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>CÙNG KHÁM PHÁ BẢN THÂN VÀ HIỂU HƠN VỀ CHÍNH MÌNH CÙNG NHỮNG BÀI TEST CỦA CHÚNG TÔI</h1>
+        <img src="img/intro-homepage.50077d0c.png" alt="" width="100%">
+        <div class="test">
+            <a href=""><div class="test1">Test MBTI</div></a>
+            <a href=""> <div class="test2">Test DISC</div></a>
+            <a href=""><div class="test3">Test HOLLAND</div></a>
+            <a href=""><div class="test4">Test BIG FIVE</div></a>
         </div>
-        
-        <div class="question">
-            <p>Bạn thích làm việc theo phong cách nào?</p>
-            <label><input type="radio" name="q2" value="D"> Lãnh đạo, chủ động</label><br>
-            <label><input type="radio" name="q2" value="I"> Sáng tạo, giao tiếp nhiều</label><br>
-            <label><input type="radio" name="q2" value="S"> Hỗ trợ nhóm, ổn định</label><br>
-            <label><input type="radio" name="q2" value="C"> Chi tiết, cẩn thận</label>
-        </div>
-        
-        <button type="button" onclick="calculateResult()">Xem kết quả</button>
-    </form>
-    <h3 id="result"></h3>
 
-    <script>
-        function calculateResult() {
-            let scores = { D: 0, I: 0, S: 0, C: 0 };
-            let answers = document.querySelectorAll('input[type=radio]:checked');
-            
-            answers.forEach(answer => {
-                scores[answer.value]++;
-            });
-            
-            let maxType = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
-            let resultText = {
-                D: "Bạn thuộc nhóm D: Quyết đoán, mạnh mẽ.",
-                I: "Bạn thuộc nhóm I: Hòa đồng, sáng tạo.",
-                S: "Bạn thuộc nhóm S: Ổn định, hỗ trợ.",
-                C: "Bạn thuộc nhóm C: Phân tích, chính xác."
-            };
-            
-            document.getElementById("result").innerText = resultText[maxType];
-        }
-    </script>
+        <h1>16 LOẠI TÍNH CÁCH TRONG MBTI</h1>
+        <img src="img/mbti.jpeg" alt="" width="100%">
+    </main>
+        <div class="disc">
+            <h1>Test DISC</h1>
+            <h3>Bài test DISC dựa trên mô hình DISC do nhà tâm lý học William Moulton Marston phát triển,
+            giúp bạn xác định 4 xu hướng tính cách chính</h3>
+            <img src="img/disc.png" alt="">
+            <div class="disc1">
+                <div class="d" style="background-color: #BE4747;">D</div>
+                <h1>Thống trị</h1>
+                <p>Thống trị</p>
+                <p>Quyết đoán</p>
+                <p>Thích lãnh đạo</p>
+            </div>
+            <div class="disc2">
+                <div class="i">I</div>
+                <h1>Ảnh hưởng</h1>
+                <p>Ảnh hưởng</p>
+                <p>Giao tiếp tốt</p>
+                <p>Thích kết nối</p>
+            </div>
+            <div class="disc3">
+                <div class="s">S</div>
+                <h1>Kiên định</h1>
+                <p>Kiên định</p>
+                <p>Cẩn thận</p>
+                <p>Chu đáo</p>
+            </div>
+            <div class="disc4">
+                <div class="c">C</div>
+                <h1>Ảnh hưởng</h1>
+                <p>Ảnh hưởng</p>
+                <p>Giao tiếp tốt</p>
+                <p>Thích kết nối</p>
+            </div>
+        </div>
+    <main>
+
+    </main>
 </body>
 </html>
