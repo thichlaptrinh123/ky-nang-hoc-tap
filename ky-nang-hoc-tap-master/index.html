@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang web trắc nghiệm</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <img src="img/logo.png" alt="Logo">
+        <nav>
+            <ul class="menu">
+              <li><a href="#">Trang chủ</a></li>
+              <li>
+                <a href="#">Bài test tâm lý</a>
+                <ul class="submenu">
+                  <li><a href="#">Bài test MBTI</a></li>
+                  <li><a href="#">Bài test DISC</a></li>
+                  <li><a href="#">Bài test HOLLAND</a></li>
+                  <li><a href="#">Bài test BIG FIVE</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="#">Bài test trí tuệ & cảm xúc</a>
+                <ul class="submenu">
+                  <li><a href="#">Bài test IQ</a></li>
+                  <li><a href="#">Bài test EQ</a></li>
+                </ul>
+              </li>
+              <li><a href="#">Bài viết</a></li>
+              <li id="user-menu">
+                <a href="login.html">Đăng nhập</a>
+              </li>
+            </ul>
+          </nav>
+    </header>
+    <main>
+        <h1>CÙNG KHÁM PHÁ BẢN THÂN VÀ HIỂU HƠN VỀ CHÍNH MÌNH CÙNG NHỮNG BÀI TEST CỦA CHÚNG TÔI</h1>
+        <img src="img/intro-homepage.50077d0c.png" alt="" width="100%">
+        <div class="test">
+            <a href=""><div class="test1">Test MBTI</div></a>
+            <a href=""> <div class="test2">Test DISC</div></a>
+            <a href=""><div class="test3">Test HOLLAND</div></a>
+            <a href=""><div class="test4">Test BIG FIVE</div></a>
+        </div>
+
+        <h1>16 LOẠI TÍNH CÁCH TRONG MBTI</h1>
+        <img src="img/mbti.jpeg" alt="" width="100%">
+    </main>
+        <div class="disc">
+            <h1>Test DISC</h1>
+            <h3>Bài test DISC dựa trên mô hình DISC do nhà tâm lý học William Moulton Marston phát triển,
+            giúp bạn xác định 4 xu hướng tính cách chính</h3>
+            <img src="img/disc.png" alt="">
+            <div class="disc1">
+                <div class="d" style="background-color: #BE4747;">D</div>
+                <h1>Thống trị</h1>
+                <p>Thống trị</p>
+                <p>Quyết đoán</p>
+                <p>Thích lãnh đạo</p>
+            </div>
+            <div class="disc2">
+                <div class="i">I</div>
+                <h1>Ảnh hưởng</h1>
+                <p>Ảnh hưởng</p>
+                <p>Giao tiếp tốt</p>
+                <p>Thích kết nối</p>
+            </div>
+            <div class="disc3">
+                <div class="s">S</div>
+                <h1>Kiên định</h1>
+                <p>Kiên định</p>
+                <p>Cẩn thận</p>
+                <p>Chu đáo</p>
+            </div>
+            <div class="disc4">
+                <div class="c">C</div>
+                <h1>Ảnh hưởng</h1>
+                <p>Ảnh hưởng</p>
+                <p>Giao tiếp tốt</p>
+                <p>Thích kết nối</p>
+            </div>
+        </div>
+    <main>
+
+    </main>
+    <script>
+        // Kiểm tra người dùng đã đăng nhập
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userMenu = document.getElementById("user-menu");
+      
+        if (user) {
+          userMenu.innerHTML = `
+            <a href="#">${user.fullname}</a> <!-- Hiển thị fullname -->
+            <ul class="submenu">
+              <li><a id="logout-btn" href="#">Đăng xuất</a></li>
+            </ul>
+          `;
+      
+          // Xử lý đăng xuất
+          document.getElementById("logout-btn").addEventListener("click", () => {
+            localStorage.removeItem("user");
+            window.location.href = "login.html"; // Chuyển về trang đăng nhập
+          });
+        }
+      </script>
+</body>
+</html>

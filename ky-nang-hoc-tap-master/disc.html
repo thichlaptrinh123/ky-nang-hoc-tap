@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc nghiệm DISC</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .question {
+            margin-bottom: 15px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h2>Trắc nghiệm DISC (3 câu hỏi demo)</h2>
+    
+    <div id="quiz">
+        <div class="question">
+            <p>1. Khi đối mặt với một thử thách, bạn thường:</p>
+            <input type="radio" name="q1" value="D"> Đưa ra quyết định nhanh chóng.<br>
+            <input type="radio" name="q1" value="S"> Tìm kiếm sự đồng thuận.<br>
+            <input type="radio" name="q1" value="I"> Thuyết phục và truyền cảm hứng.<br>
+            <input type="radio" name="q1" value="C"> Phân tích kỹ lưỡng trước khi quyết định.<br>
+        </div>
+        
+        <div class="question">
+            <p>2. Khi làm việc nhóm, bạn thường:</p>
+            <input type="radio" name="q2" value="D"> Thích giữ vị trí lãnh đạo.<br>
+            <input type="radio" name="q2" value="I"> Tạo ra không khí vui vẻ.<br>
+            <input type="radio" name="q2" value="S"> Hỗ trợ và giúp đỡ mọi người.<br>
+            <input type="radio" name="q2" value="C"> Đảm bảo công việc đúng quy trình.<br>
+        </div>
+        
+        <div class="question">
+            <p>3. Khi gặp vấn đề phức tạp, bạn thường:</p>
+            <input type="radio" name="q3" value="D"> Tìm cách giải quyết ngay lập tức.<br>
+            <input type="radio" name="q3" value="C"> Phân tích chi tiết và tìm hiểu kỹ trước khi hành động.<br>
+            <input type="radio" name="q3" value="I"> Chia sẻ vấn đề với người khác để nhận phản hồi.<br>
+            <input type="radio" name="q3" value="S"> Đợi xem có ai khác có thể giúp mình không.<br>
+        </div>
+
+        <div class="question">
+            <p>4. Điều gì quan trọng nhất với bạn trong công việc?</p>
+            <input type="radio" name="q4" value="S"> Sự ổn định và hài hòa.<br>
+            <input type="radio" name="q4" value="C"> Các mối quan hệ và sự công nhận.<br>
+            <input type="radio" name="q4" value="I"> Sự chính xác và chất lượng.<br>
+            <input type="radio" name="q4" value="D"> Thành công và kết quả.<br>
+        </div>
+
+        <div class="question">
+            <p>5. Khi bị chỉ trích, bạn thường:</p>
+            <input type="radio" name="q5" value="S"> Cảm thấy khó chịu nhưng không thể hiện ra ngoài.<br>
+            <input type="radio" name="q5" value="I"> Cố gắng làm cho không khí bớt căng thẳng.<br>
+            <input type="radio" name="q5" value="C"> Xem xét cẩn thận lời phê bình và điều chỉnh bản thân.<br>
+            <input type="radio" name="q5" value="D"> Phản ứng mạnh mẽ và bảo vệ ý kiến của mình.<br>
+        </div>
+
+        <div class="question">
+            <p>6. Bạn thích làm việc trong môi trường như thế nào?</p>
+            <input type="radio" name="q6" value="I"> Năng động, nhiều sự kiện và giao tiếp.<br>
+            <input type="radio" name="q6" value="D"> Nhanh chóng, thử thách, nhiều cơ hội.<br>
+            <input type="radio" name="q6" value="S"> Ổn định, thân thiện và gắn kết.<br>
+            <input type="radio" name="q6" value="C"> Có hệ thống, trật tự và rõ ràng.<br>
+        </div>
+
+        <div class="question">
+            <p>7. Khi có quá nhiều việc phải làm, bạn thường:</p>
+            <input type="radio" name="q7" value="I"> Nhờ người khác giúp đỡ và chia sẻ công việc.<br>
+            <input type="radio" name="q7" value="S"> Sắp xếp thứ tự ưu tiên và làm từng việc một.<br>
+            <input type="radio" name="q7" value="D"> Tập trung vào mục tiêu chính và ra quyết định nhanh.<br>
+            <input type="radio" name="q7" value="C"> Lập kế hoạch chi tiết và làm theo từng bước.<br>
+        </div>
+
+        <div class="question">
+            <p>8. Khi giao tiếp với người khác, bạn thường:</p>
+            <input type="radio" name="q8" value="S"> Thẳng thắn và đi vào vấn đề chính.<br>
+            <input type="radio" name="q8" value="I"> Cởi mở, nói nhiều và thích chia sẻ.<br>
+            <input type="radio" name="q8" value="D"> Tập trung vào mục tiêu chính và ra quyết định nhanh.<br>
+            <input type="radio" name="q8" value="C"> Nói có trọng tâm và dựa trên dữ liệu.<br>
+        </div>
+
+        <div class="question">
+            <p>9. Điều gì khiến bạn cảm thấy khó chịu nhất?</p>
+            <input type="radio" name="q9" value="C"> Sự thiếu chính xác và sai sót.<br>
+            <input type="radio" name="q9" value="D"> Sự trì hoãn và thiếu quyết đoán.<br>
+            <input type="radio" name="q9" value="I"> Sự lạnh lùng và xa cách.<br>
+            <input type="radio" name="q9" value="S"> Mâu thuẫn và tranh cãi.<br>
+        </div>
+
+        <div class="question">
+            <p>10. Khi làm việc với người khác, bạn ưu tiên:</p>
+            <input type="radio" name="q10" value="D"> Đạt được kết quả nhanh chóng.<br>
+            <input type="radio" name="q10" value="I"> Tạo ra sự kết nối và tương tác tốt.<br>
+            <input type="radio" name="q10" value="C"> Đảm bảo chất lượng và quy trình chính xác.<br>
+            <input type="radio" name="q10" value="S"> Xây dựng sự tin tưởng và hợp tác.<br>
+        </div>
+
+        <div class="question">
+            <p>11. Bạn phản ứng thế nào khi có thay đổi lớn?</p>
+            <input type="radio" name="q10" value="C"> Xem xét mọi khía cạnh trước khi hành động.<br>
+            <input type="radio" name="q10" value="D"> Thích ứng nhanh và kiểm soát tình hình.<br>
+            <input type="radio" name="q10" value="S"> Cần thời gian để thích nghi và điều chỉnh.<br>
+            <input type="radio" name="q10" value="I"> Nhìn vào mặt tích cực và động viên mọi người.<br>
+        </div>
+
+        <div class="question">
+            <p>11. Bạn phản ứng thế nào khi có thay đổi lớn?</p>
+            <input type="radio" name="q10" value="C"> Xem xét mọi khía cạnh trước khi hành động.<br>
+            <input type="radio" name="q10" value="D"> Thích ứng nhanh và kiểm soát tình hình.<br>
+            <input type="radio" name="q10" value="S"> Cần thời gian để thích nghi và điều chỉnh.<br>
+            <input type="radio" name="q10" value="I"> Nhìn vào mặt tích cực và động viên mọi người.<br>
+        </div>
+
+    </div>  
+    
+    <button onclick="calculateScore()">Xem kết quả</button>
+    <h3 id="result"></h3>
+
+    <script>
+        function calculateScore() {
+            let scores = { D: 0, I: 0, S: 0, C: 0 };
+            let questions = ["q1", "q2", "q3", "q4", "q5", "q6", "q7"];
+
+            questions.forEach(q => {
+                let answer = document.querySelector(`input[name="${q}"]:checked`);
+                if (answer) {
+                    scores[answer.value]++;
+                }
+            });
+
+            let maxScore = Math.max(scores.D, scores.I, scores.S, scores.C);
+            let result = Object.keys(scores).filter(key => scores[key] === maxScore);
+            document.getElementById("result").innerText = "Bạn thuộc nhóm: " + result.join(" - ");
+            console.log(scores);
+        }
+    </script>
+</body>
+</html>
