@@ -154,8 +154,7 @@ main h1{
 
 .disc{
     width: 100%;
-    height: 1000px;
-    background-color: #CECABA;
+    height: 700px;
     position: relative;
     padding-top: 20px;
 }
@@ -172,8 +171,9 @@ main h1{
 
 .disc1{
     position: absolute;
-    top: 140px;
-    left: 200px;
+    top: 150px;
+    left: 140px;
+    
 }
 .d{
     width: 50px;
@@ -187,20 +187,35 @@ main h1{
 }
 .disc2{
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 150px;
+    right: 140px;
 }
 .disc3{
     position: absolute;
     bottom: 0;
-    left: 0;
+    left: 140px;
 }
 .disc4{
     position: absolute;
     bottom: 0;
-    right: 0;
+    right: 140px;
 }
 
+footer{
+    width: 100%;
+    height: 380px;
+    background-color: #CECABA;
+}
+
+.menuF{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 20px;
+    padding: 20px;
+}
+.end{
+    text-align: center;
+}
 /* Container bài viết */
 .post-container {
     display: flex;

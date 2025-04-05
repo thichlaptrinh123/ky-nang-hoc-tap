@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MBTI Personality Test</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+
+    .question {
+      margin-bottom: 20px;
+    }
+
+    .options {
+      list-style: none;
+      padding: 0;
+    }
+
+    .options li {
+      margin: 10px 0;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #CECABA;
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: steelblue;
+    }
+  </style>
+</head>
+<body>
+    <header>
+        <img src="img/logo.png" alt="Logo">
+        <div>Night Owl</div>
+        <nav>
+            <ul class="menu">
+              <li><a href="#">Trang chủ</a></li>
+              <li>
+                <a href="#">Bài test tâm lý</a>
+                <ul class="submenu">
+                  <li><a href="#">Bài test MBTI</a></li>
+                  <li><a href="#">Bài test DISC</a></li>
+                  <li><a href="#">Bài test HOLLAND</a></li>
+                  <li><a href="#">Bài test BIG FIVE</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="#">Bài test trí tuệ & cảm xúc</a>
+                <ul class="submenu">
+                  <li><a href="#">Bài test IQ</a></li>
+                  <li><a href="#">Bài test EQ</a></li>
+                </ul>
+              </li>
+              <li><a href="post.html">Bài viết</a></li>
+              <li id="user-menu">
+                <a href="login.html">Đăng nhập</a>
+              </li>
+            </ul>
+          </nav>
+    </header>
+
+  <div class="container">
+    <div id="test-container"></div>
+    <button id="submit" onclick="submitTest()">Submit</button>
+    <div id="result-container"></div>
+  </div>
+  
+
+  <footer>
+    <div class="menuF">
+      <div>
+        <img src="img/logo.png" alt="" width="100px" height="100px">
+        <p>"Night Owl – Thức cùng bạn, hiểu chính mình."</p>
+      </div>
+      <div>
+        <h1>CÁC BÀI TEST</h1>
+        <p>Bài test MBTI</p>
+        <p>Bài test DISC</p>
+        <p>Bài test HOLLAND</p>
+        <p>Bài test BIG FIVE</p>
+        <p>Bài test IQ</p>
+        <p>Bài test EQ</p>
+      </div>
+      <div>
+        <h1>LIÊN HỆ VỚI CHÚNG TÔI</h1>
+        <p>Phone: 0904 693 310</p>
+        <p>Email: nightowl@gmail.com</p>
+      </div>
+    </div>
+    <hr>
+    <div class="end">
+      © 2025 Night Owl. All rights reserved.
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Lấy dữ liệu từ API
+      fetch('http://127.0.0.1:8000/v1/test/67f12357f51ce8b845d49538')
+        .then(response => response.json())
+        .then(data => {
+          renderTest(data);
+        })
+        .catch(error => console.error('Error fetching the test data:', error));
+    });
+
+    function renderTest(testData) {
+  const testContainer = document.getElementById('test-container');
+
+  const title = document.createElement('h2');
+  title.innerText = testData.title;
+  testContainer.appendChild(title);
+
+  testData.questions.forEach((question, index) => {
+    const questionElement = document.createElement('div');
+    questionElement.classList.add('question');
+
+    const questionText = document.createElement('p');
+    questionText.innerText = question.question;
+    questionElement.appendChild(questionText);
+
+    const optionsList = document.createElement('ul');
+    optionsList.classList.add('options');
+
+    question.options.forEach(option => {
+      const optionItem = document.createElement('li');
+      const optionLabel = document.createElement('label');
+      const optionInput = document.createElement('input');
+      optionInput.type = 'radio';
+      optionInput.name = 'question-' + index;
+      optionInput.value = option.value;
+      optionLabel.appendChild(optionInput);
+      optionLabel.appendChild(document.createTextNode(option.text));
+      optionItem.appendChild(optionLabel);
+      optionsList.appendChild(optionItem);
+    });
+
+    questionElement.appendChild(optionsList);
+    testContainer.appendChild(questionElement);
+  });
+}
+
+
+
+function submitTest() {
+  const answers = [];
+  const questions = document.querySelectorAll('.question');
+  const resultCount = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+
+  // Thu thập câu trả lời và tính giá trị
+  questions.forEach((question, index) => {
+    const selectedOption = question.querySelector('input[type="radio"]:checked');
+    if (selectedOption) {
+      answers.push({
+        questionIndex: index,
+        answer: selectedOption.value
+      });
+
+      // Cập nhật kết quả cho từng nhóm tính cách
+      const value = parseInt(selectedOption.value); // Lấy giá trị của lựa chọn
+
+      // Ví dụ: Cập nhật nhóm tính cách E/I, S/N, T/F, J/P
+      if (index < 5) { // Giả sử câu hỏi 1-5 liên quan đến nhóm E/I
+        resultCount.E += value;
+        resultCount.I += (1 - value);
+      } else if (index < 10) { // Câu hỏi 6-10 liên quan đến nhóm S/N
+        resultCount.S += value;
+        resultCount.N += (1 - value);
+      } else if (index < 15) { // Câu hỏi 11-15 liên quan đến nhóm T/F
+        resultCount.T += value;
+        resultCount.F += (1 - value);
+      } else { // Câu hỏi 16-20 liên quan đến nhóm J/P
+        resultCount.J += value;
+        resultCount.P += (1 - value);
+      }
+    }
+  });
+
+  // Kiểm tra nếu người dùng đã trả lời đủ câu hỏi
+  if (answers.length === questions.length) {
+    console.log('Submitted answers:', answers);
+
+    // Tính toán kết quả MBTI
+    let result = '';
+    result += resultCount.E > resultCount.I ? 'E' : 'I';
+    result += resultCount.S > resultCount.N ? 'S' : 'N';
+    result += resultCount.T > resultCount.F ? 'T' : 'F';
+    result += resultCount.J > resultCount.P ? 'J' : 'P';
+
+    // Hiển thị kết quả MBTI
+    showResult(result);
+
+    alert('Bạn đã hoàn thành bài test');
+  } else {
+    alert('Vui lòng chọn hết các câu hỏi');
+  }
+}
+
+// Hàm hiển thị kết quả MBTI
+function showResult(result) {
+  // Kết quả MBTI từ người dùng
+  const results = [
+    { "type": "ISTJ", "description": "Kỷ luật, thực tế, đáng tin cậy." },
+    { "type": "ISFJ", "description": "Chu đáo, nhạy cảm, tận tâm." },
+    { "type": "INFJ", "description": "Sâu sắc, sáng tạo, lý tưởng." },
+    { "type": "INTJ", "description": "Chiến lược, độc lập, có tầm nhìn." },
+    { "type": "ISTP", "description": "Linh hoạt, thích thử nghiệm, logic." },
+    { "type": "ISFP", "description": "Nghệ thuật, nhẹ nhàng, sống theo cảm xúc." },
+    { "type": "INFP", "description": "Lãng mạn, sáng tạo, chân thành." },
+    { "type": "INTP", "description": "Phân tích, tò mò, yêu thích tri thức." },
+    { "type": "ESTP", "description": "Hành động nhanh, hướng ngoại, quyết đoán." },
+    { "type": "ESFP", "description": "Hòa đồng, vui vẻ, thích trải nghiệm." },
+    { "type": "ENFP", "description": "Nhiệt huyết, sáng tạo, truyền cảm hứng." },
+    { "type": "ENTP", "description": "Linh hoạt, thông minh, thích tranh luận." },
+    { "type": "ESTJ", "description": "Lãnh đạo, thực tế, có tổ chức." },
+    { "type": "ESFJ", "description": "Tận tâm, quan tâm đến người khác." },
+    { "type": "ENFJ", "description": "Hòa đồng, nhạy bén, truyền động lực." },
+    { "type": "ENTJ", "description": "Quyết đoán, chiến lược, dẫn dắt." }
+  ];
+
+  // Tìm kết quả MBTI dựa trên nhóm tính cách
+  const resultObj = results.find(r => r.type === result);
+
+  let advice = "";
+  // Thêm phần lời khuyên dựa trên kết quả
+  switch (resultObj?.type) {
+    case "ISTJ":
+      advice = "Phát triển kỹ năng giao tiếp và cởi mở với sự thay đổi.";
+      break;
+    case "ISFJ":
+      advice = "Cố gắng tìm thời gian cho bản thân và học cách nói 'không' khi cần.";
+      break;
+    case "INFJ":
+      advice = "Cố gắng tìm sự cân bằng giữa lý tưởng và thực tế trong cuộc sống.";
+      break;
+    case "INTJ":
+      advice = "Cải thiện khả năng giao tiếp và quản lý cảm xúc với người khác.";
+      break;
+    case "ISTP":
+      advice = "Hãy thử mở rộng phạm vi công việc và đón nhận các thử thách mới.";
+      break;
+    case "ISFP":
+      advice = "Tập trung vào việc theo đuổi đam mê và học cách quản lý cảm xúc.";
+      break;
+    case "INFP":
+      advice = "Cố gắng thực tế hơn trong việc thực hiện các mục tiêu và đừng ngại chia sẻ cảm xúc.";
+      break;
+    case "INTP":
+      advice = "Cải thiện kỹ năng giao tiếp và học cách áp dụng lý thuyết vào thực tế.";
+      break;
+    case "ESTP":
+      advice = "Cố gắng phát triển khả năng lắng nghe và hiểu người khác hơn.";
+      break;
+    case "ESFP":
+      advice = "Đừng quên duy trì sự cân bằng giữa công việc và cuộc sống cá nhân.";
+      break;
+    case "ENFP":
+      advice = "Tập trung vào việc duy trì sự ổn định và hoàn thành những mục tiêu dài hạn.";
+      break;
+    case "ENTP":
+      advice = "Cải thiện khả năng lắng nghe và làm việc trong nhóm.";
+      break;
+    case "ESTJ":
+      advice = "Học cách chấp nhận sự thay đổi và phát triển kỹ năng linh hoạt.";
+      break;
+    case "ESFJ":
+      advice = "Học cách tự chăm sóc bản thân và tìm thời gian cho chính mình.";
+      break;
+    case "ENFJ":
+      advice = "Cố gắng duy trì sự cân bằng giữa công việc và cảm xúc của bản thân.";
+      break;
+    case "ENTJ":
+      advice = "Cải thiện kỹ năng quản lý cảm xúc và lắng nghe ý kiến từ người khác.";
+      break;
+    default:
+      advice = "Hãy tiếp tục khám phá và phát triển bản thân!";
+      break;
+  }
+
+  // Hiển thị kết quả MBTI và lời khuyên
+  if (resultObj) {
+    const resultContainer = document.getElementById('result-container');
+
+    // Tạo phần hiển thị kết quả MBTI
+    const resultText = document.createElement('p');
+    resultText.innerHTML = `<strong>${resultObj.type}</strong>: ${resultObj.description}`;
+
+    // Tạo phần lời khuyên
+    const adviceText = document.createElement('p');
+    adviceText.innerHTML = `<strong>Lời khuyên:</strong> ${advice}`;
+
+    // Tạo button "Xem thêm"
+    const xemthemButton = document.createElement('button');
+    xemthemButton.textContent = 'Xem thêm';
+    xemthemButton.style.marginTop = '10px'; // Để khoảng cách giữa button và nội dung
+
+    // Gắn sự kiện khi người dùng nhấn vào button
+    xemthemButton.addEventListener('click', function () {
+        // Chuyển đến trang mới khi nhấn nút
+        window.location.href = "https://example.com"; 
+    });
+
+    // Gắn các phần tử vào container
+    resultContainer.appendChild(resultText);
+    resultContainer.appendChild(adviceText);
+    resultContainer.appendChild(xemthemButton);  
+}
+}
+
+
+
+  </script>
+</body>
+</html>

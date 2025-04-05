@@ -101,7 +101,10 @@ const postSchema = mongoose.Schema(
   }
 );
 
+
+
 userData.plugin(mongoosePaginate);
 const Post = mongoose.model("Post", postSchema);
 const account = mongoose.model("account", accountData);
+
 module.exports = { account, Post };

@@ -3,7 +3,9 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors"); // Import cors
 const accountRoutes = require("./routes/account");
+const testRoutes = require("./routes/test");
 const { Post } = require("./model/model"); // Import model Post
+require('./model/testModel');
 
 dotenv.config();
 
@@ -50,6 +52,8 @@ mongoose
 
 // Định nghĩa router cho tài khoản
 app.use("/v1/account", accountRoutes);
+
+app.use("/v1/test", testRoutes);
 
 // API lấy danh sách bài viết
 app.get("/v1/posts", async (req, res) => {
