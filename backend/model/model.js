@@ -1,70 +1,6 @@
 const mongoose = require("mongoose");
 const mongoosePaginate = require("mongoose-paginate-v2");
 
-//category
-const categoryData = mongoose.Schema({
-  name: { 
-    type: String, 
-    required: true,
-    minlength: 6,
-    unique: true,
-  }
-});
-const productsData = mongoose.Schema({
-  id: {
-    type: String,
-    require: true,
-  },
-  name: {
-    type: String,
-    require: true,
-  },
-  desc: {
-    type: String,
-  },
-  category: {
-    type: String,
-  },
-  image: {
-    type: String,
-  },
-  price: {
-    type: Number,
-  },
-  
-
-});
-//product
-const dataProduct = mongoose.Schema({
-  id: {
-    type: String,
-    require: true,
-  },
-  name: {
-    type: String,
-    default: 'no name',
-    trim: true,
-    minlength: 1,
-  },
-  desc: {
-    type: String,
-  },
-  linkimage: {
-    type: String,
-  },
-  linkproduct: {
-    type: String,
-  },
-  // product: [
-  //   {
-  //     type: String,
-  //   },
-  // ],
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "author",
-  },
-});
 const userData = new mongoose.Schema({
   id: {
     type: String,
@@ -100,23 +36,34 @@ const userData = new mongoose.Schema({
 const accountData = new mongoose.Schema({
   fullname: {
     type: String,
+    trim: true,
+    default: "Người dùng", // Giá trị mặc định
   },
   phone: {
     type: String,
     required: true,
     minlength: 6,
     unique: true,
+    trim: true,
   },
   email: {
     type: String,
     required: true,
     minlength: 6,
     unique: true,
+    trim: true,
+    validate: {
+      validator: function (v) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); // Kiểm tra định dạng email
+      },
+      message: (props) => `${props.value} không phải là email hợp lệ!`,
+    },
   },
   password: {
     type: String,
     required: true,
     minlength: 6,
+    trim: true,
   },
   admin: {
     type: Boolean,
@@ -124,14 +71,37 @@ const accountData = new mongoose.Schema({
   },
 });
 
-productsData.plugin(mongoosePaginate);
-categoryData.plugin(mongoosePaginate);
+// Schema cho collection posts
+const postSchema = mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      minlength: 3,
+      trim: true, // Loại bỏ khoảng trắng thừa
+    },
+    image: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    content: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    author: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+  },
+  {
+    timestamps: true, // Tự động thêm createdAt và updatedAt
+  }
+);
+
 userData.plugin(mongoosePaginate);
-dataProduct.plugin(mongoosePaginate);
-accountData.plugin(mongoosePaginate);
-let product = mongoose.model("product", productsData);
-let category = mongoose.model("category", categoryData);
-let theme = mongoose.model("theme", dataProduct);
-let author = mongoose.model("author", userData);
+const Post = mongoose.model("Post", postSchema);
 const account = mongoose.model("account", accountData);
-module.exports = { theme, author,account,category,product };
+module.exports = { account, Post };

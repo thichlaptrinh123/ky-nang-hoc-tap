@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bài viết</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+    <header>
+        <img src="img/logo.png" alt="Logo" />
+        <nav>
+            <ul class="menu">
+                <li><a href="index.html">Trang chủ</a></li>
+                <li><a href="#">Bài test tâm lý</a></li>
+                <li><a href="#">Bài test trí tuệ & cảm xúc</a></li>
+                <li><a href="post.html">Bài viết</a></li>
+                <li id="user-menu">
+                    <a href="login.html">Đăng nhập</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>Danh sách bài viết</h1>
+        <div class="post-container" id="post-container">
+            <!-- Các bài viết sẽ được hiển thị tại đây -->
+        </div>
+    </main>
+    <script>
+        // Kiểm tra người dùng đã đăng nhập
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userMenu = document.getElementById("user-menu");
+
+        if (user) {
+            userMenu.innerHTML = `
+                <a href="#">${user.fullname}</a> <!-- Hiển thị fullname -->
+                <ul class="submenu">
+                    <li><a id="logout-btn" href="#">Đăng xuất</a></li>
+                </ul>
+            `;
+
+            // Xử lý đăng xuất
+            document.getElementById("logout-btn").addEventListener("click", () => {
+                localStorage.removeItem("user");
+                window.location.href = "login.html"; // Chuyển về trang đăng nhập
+            });
+        }
+
+        // Lấy dữ liệu bài viết từ MongoDB
+        async function fetchPosts() {
+            try {
+                const response = await fetch("http://localhost:8000/v1/posts");
+                const posts = await response.json();
+
+                const postContainer = document.getElementById("post-container");
+                postContainer.innerHTML = posts
+                    .map(
+                        (post) => `
+                        <div class="post-item">
+                        <a href="postdetail.html?id=${post._id}">
+                            <h2>${post.title}</h2>
+                            <img src="${post.image}" alt="${post.title}" class="post-image">
+                        </a>
+                    <p><strong>Ngày đăng:</strong> ${new Date(
+                            post.createdAt
+                        ).toLocaleDateString()}</p>
+                    <p>${post.content
+                                .substring(0, 100)
+                                .replace(/\n/g, "<br>")}...</p>
+                    <p><strong>Tác giả:</strong> ${post.author}</p>
+                </div>
+            `
+                    )
+                    .join("");
+            } catch (error) {
+                console.error("Lỗi khi lấy bài viết:", error);
+            }
+        }
+
+        fetchPosts();
+    </script>
+</body>
+
+</html>

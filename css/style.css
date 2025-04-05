@@ -1,7 +1,12 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
 }
 
 header {
@@ -196,3 +201,93 @@ main h1{
     right: 0;
 }
 
+/* Container bài viết */
+.post-container {
+    display: flex;
+    flex-wrap: wrap; /* Cho phép xuống dòng nếu không đủ chỗ */
+    gap: 20px; /* Khoảng cách giữa các bài viết */
+    justify-content: center; /* Căn giữa các bài viết */
+    margin-top: 20px;
+}
+
+/* Bài viết */
+.post-item {
+    flex: 0 0 calc(33.333% - 20px); /* 3 bài viết trên mỗi hàng */
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    overflow: hidden; /* Đảm bảo nội dung không vượt quá khung */
+}
+
+/* Hình ảnh minh họa */
+.post-item img.post-image {
+    width: 100%; /* Đảm bảo hình ảnh chiếm toàn bộ chiều rộng khung */
+    height: 200px; /* Đặt chiều cao cố định */
+    object-fit: cover; /* Cắt hình ảnh để vừa khung mà không bị méo */
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.post-item h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+    white-space: nowrap; /* Không cho chữ xuống dòng */
+    overflow: hidden; /* Ẩn phần chữ vượt quá khung */
+    text-overflow: ellipsis; /* Thêm dấu "..." nếu chữ quá dài */
+}
+
+.post-item p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+    line-height: 1.5; /* Tăng khoảng cách giữa các dòng */
+}
+
+/* Đảm bảo hình ảnh hoặc nội dung không vượt quá khung */
+.post-item img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+/* Chi tiết bài viết */
+.post-detail {
+    max-width: 800px; /* Giới hạn chiều ngang của nội dung */
+    margin: 0 auto; /* Căn giữa nội dung */
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    line-height: 1.6; /* Tăng khoảng cách giữa các dòng */
+    word-wrap: break-word; /* Tự động xuống dòng nếu từ quá dài */
+    overflow-wrap: break-word; /* Tương tự word-wrap, hỗ trợ trình duyệt hiện đại */
+}
+
+.post-detail h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.post-detail p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.post-detail pre {
+    font-size: 16px;
+    color: #444;
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-radius: 5px;
+    white-space: pre-wrap; /* Giữ định dạng xuống dòng và tự động xuống dòng nếu quá dài */
+    word-wrap: break-word; /* Tự động xuống dòng nếu từ quá dài */
+    overflow-wrap: break-word; /* Tương tự word-wrap */
+}

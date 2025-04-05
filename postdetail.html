@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết bài viết</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <img src="img/logo.png" alt="Logo">
+        <nav>
+            <ul class="menu">
+                <li><a href="index.html">Trang chủ</a></li>
+                <li><a href="#">Bài test tâm lý</a></li>
+                <li><a href="#">Bài test trí tuệ & cảm xúc</a></li>
+                <li><a href="post.html">Bài viết</a></li>
+                <li id="user-menu">
+                    <a href="login.html">Đăng nhập</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="post-detail" id="post-detail">
+            <!-- Chi tiết bài viết sẽ được hiển thị tại đây -->
+        </div>
+    </main>
+    <script>
+        // Kiểm tra người dùng đã đăng nhập
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userMenu = document.getElementById("user-menu");
+
+        if (user) {
+            userMenu.innerHTML = `
+            <a href="#">${user.fullname}</a> <!-- Hiển thị fullname -->
+            <ul class="submenu">
+              <li><a id="logout-btn" href="#">Đăng xuất</a></li>
+            </ul>
+          `;
+
+            // Xử lý đăng xuất
+            document.getElementById("logout-btn").addEventListener("click", () => {
+                localStorage.removeItem("user");
+                window.location.href = "login.html"; // Chuyển về trang đăng nhập
+            });
+        }
+
+        // Lấy chi tiết bài viết từ MongoDB
+        async function fetchPostDetail() {
+            const params = new URLSearchParams(window.location.search);
+            const postId = params.get("id"); // Lấy ID bài viết từ URL
+
+            if (!postId) {
+                document.getElementById("post-detail").innerHTML = "<p>Bài viết không tồn tại.</p>";
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:8000/v1/posts/${postId}`);
+                const post = await response.json();
+
+                const postDetail = document.getElementById("post-detail");
+                postDetail.innerHTML = `
+                <h1>${post.title}</h1>
+                <p><strong>Tác giả:</strong> ${post.author}</p>
+                <pre>${post.content}</pre> <!-- Sử dụng <pre> để giữ định dạng -->
+            `;
+            } catch (error) {
+                console.error("Lỗi khi lấy chi tiết bài viết:", error);
+                document.getElementById("post-detail").innerHTML = "<p>Không thể tải bài viết.</p>";
+            }
+        }
+
+        fetchPostDetail();
+    </script>
+</body>
+
+</html>
