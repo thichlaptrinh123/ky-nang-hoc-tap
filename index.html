@@ -11,27 +11,29 @@
         <img src="img/logo.png" alt="Logo">
         <nav>
             <ul class="menu">
-                <li><a href="#">Trang chủ</a></li>
-                <li>
-                    <a href="#">Bài test tâm lý</a>
-                    <ul class="submenu">
-                        <li><a href="#">Bài test MBTI</a></li>
-                        <li><a href="#">Bài test DISC</a></li>
-                        <li><a href="#">Bài test HOLLAND</a></li>
-                        <li><a href="#">Bài test BIG FIVE</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">Bài test trí tuệ & cảm xúc</a>
-                    <ul class="submenu">
-                        <li><a href="#">Bài test IQ</a></li>
-                        <li><a href="#">Bài test EQ</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Bài viết</a></li>
-                <li><a href="#">Đăng nhập</a></li>
+              <li><a href="#">Trang chủ</a></li>
+              <li>
+                <a href="#">Bài test tâm lý</a>
+                <ul class="submenu">
+                  <li><a href="#">Bài test MBTI</a></li>
+                  <li><a href="#">Bài test DISC</a></li>
+                  <li><a href="#">Bài test HOLLAND</a></li>
+                  <li><a href="#">Bài test BIG FIVE</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="#">Bài test trí tuệ & cảm xúc</a>
+                <ul class="submenu">
+                  <li><a href="#">Bài test IQ</a></li>
+                  <li><a href="#">Bài test EQ</a></li>
+                </ul>
+              </li>
+              <li><a href="#">Bài viết</a></li>
+              <li id="user-menu">
+                <a href="login.html">Đăng nhập</a>
+              </li>
             </ul>
-        </nav>
+          </nav>
     </header>
     <main>
         <h1>CÙNG KHÁM PHÁ BẢN THÂN VÀ HIỂU HƠN VỀ CHÍNH MÌNH CÙNG NHỮNG BÀI TEST CỦA CHÚNG TÔI</h1>
@@ -83,5 +85,25 @@
     <main>
 
     </main>
+    <script>
+        // Kiểm tra người dùng đã đăng nhập
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userMenu = document.getElementById("user-menu");
+      
+        if (user) {
+          userMenu.innerHTML = `
+            <a href="#">${user.fullname}</a> <!-- Hiển thị fullname -->
+            <ul class="submenu">
+              <li><a id="logout-btn" href="#">Đăng xuất</a></li>
+            </ul>
+          `;
+      
+          // Xử lý đăng xuất
+          document.getElementById("logout-btn").addEventListener("click", () => {
+            localStorage.removeItem("user");
+            window.location.href = "login.html"; // Chuyển về trang đăng nhập
+          });
+        }
+      </script>
 </body>
 </html>
