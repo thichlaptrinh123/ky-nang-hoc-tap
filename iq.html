@@ -84,8 +84,7 @@
 
   <div class="container">
     <div id="test-container"></div>
-    <button id="submit" onclick="submitTest()">Submit</button>
-    <div id="result-container"></div>
+
   </div>
   
 
@@ -119,7 +118,7 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Lấy dữ liệu từ API
-      fetch('http://127.0.0.1:8000/v1/test/67f14b42ae92bae0f8bb9fef')
+      fetch('http://127.0.0.1:8000/v1/test/67f12357f51ce8b845d49538')
         .then(response => response.json())
         .then(data => {
           renderTest(data);
@@ -129,7 +128,6 @@
 
     function renderTest(testData) {
   const testContainer = document.getElementById('test-container');
-  testContainer.innerHTML = '';
 
   const title = document.createElement('h2');
   title.innerText = testData.title;
@@ -137,10 +135,63 @@
 
   testData.questions.forEach((question, index) => {
     const questionElement = document.createElement('div');
-    questionElement.classList.add('question-holland');
+    questionElement.classList.add('question');
 
     const questionText = document.createElement('p');
-    questionText.innerText =  question.question;
+    questionText.innerText = question.question;
+    questionElement.appendChild(questionText);
+
+    const optionsList = document.createElement('ul');
+    optionsList.classList.add('options');
+
+    question.options.forEach(option => {
+      const optionItem = document.createElement('li');
+      const optionLabel = document.createElement('label');
+      const optionInput = document.createElement('input');
+      optionInput.type = 'radio';
+      optionInput.name = 'question-' + index;
+      optionInput.value = option.value;
+      optionLabel.appendChild(optionInput);
+      optionLabel.appendChild(document.createTextNode(option.text));
+      optionItem.appendChild(optionLabel);
+      optionsList.appendChild(optionItem);
+    });
+
+    questionElement.appendChild(optionsList);
+    testContainer.appendChild(questionElement);
+  });
+}
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Lấy dữ liệu từ API
+  fetch('http://127.0.0.1:8000/v1/test/67f230fed22a5af8015cf86d')
+    .then(response => response.json())
+    .then(data => {
+      renderTestIQ(data);
+    })
+    .catch(error => console.error('Error fetching the test data:', error));
+});
+
+function renderTestIQ(testData) {
+  const testContainer = document.getElementById('test-container');
+  testContainer.innerHTML = '';  // Xóa nội dung cũ
+
+  const title = document.createElement('h2');
+  title.innerText = testData.title;
+  testContainer.appendChild(title);
+
+  const description = document.createElement('p');
+  description.innerText = testData.description;
+  testContainer.appendChild(description);
+
+  testData.questions.forEach((question, index) => {
+    const questionElement = document.createElement('div');
+    questionElement.classList.add('question');
+
+    const questionText = document.createElement('p');
+    questionText.innerText = question.question;
     questionElement.appendChild(questionText);
 
     const optionsList = document.createElement('ul');
@@ -166,62 +217,46 @@
     questionElement.appendChild(optionsList);
     testContainer.appendChild(questionElement);
   });
+
+  // Thêm nút nộp bài
+  const submitButton = document.createElement('button');
+  submitButton.innerText = 'Nộp bài';
+  submitButton.addEventListener('click', function() {
+    calculateIQ(testData.questions);
+  });
+  testContainer.appendChild(submitButton);
 }
 
-
-
-
-
-function submitTest() {
-  const traitCounts = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
-
-  const questions = document.querySelectorAll('.question-holland');
-  let answeredCount = 0;
+function calculateIQ(questions) {
+  let correctCount = 0;
 
   questions.forEach((question, index) => {
-    const selectedOption = question.querySelector(`input[name="question-${index}"]:checked`);
-    
+    const selectedOption = document.querySelector(`input[name="question-${index}"]:checked`);
     if (selectedOption) {
-      answeredCount++;
-
-      const trait = selectedOption.value;
-      if (trait) {
-        traitCounts[trait]++;
+      const value = selectedOption.value;
+      // Kiểm tra nếu câu trả lời đúng (D là đúng, S là sai)
+      if (value === 'D') {
+        correctCount++;
       }
     }
   });
 
-  // Kiểm tra nếu chưa trả lời đủ câu hỏi
-  if (answeredCount < questions.length) {
-    alert(`Bạn còn ${questions.length - answeredCount} câu hỏi chưa trả lời. Vui lòng hoàn thành trước khi nộp.`);
-    return;
-  }
-
-  // Tìm trait cao nhất
-  const sortedTraits = Object.entries(traitCounts).sort((a, b) => b[1] - a[1]);
-  const topTrait = sortedTraits[0][0];
-
-  showResultHolland(topTrait);
+  // Tính IQ theo công thức
+  const iq = 100 + (((correctCount - 15) / 10) * 15);
+  displayResultIQ(iq, correctCount);
 }
 
-
-
-
-function showResultHolland(trait) {
-  const descriptions = {
-    R: "(Thực tế) – Kỹ thuật, công nghệ: Kỹ sư cơ khí, kỹ sư điện, công nghệ thông tin, kỹ thuật viên sửa chữa, thợ điện, thợ mộc, nông nghiệp, lâm nghiệp, chăn nuôi.",
-    I: "(Nghiên cứu) – Khoa học, nghiên cứu: Nhà khoa học, nhà nghiên cứu, bác sĩ, kỹ sư phần mềm, lập trình viên, phân tích dữ liệu, thống kê.",
-    A: "(Nghệ thuật) – Sáng tạo, nghệ thuật: Nhà thiết kế đồ họa, họa sĩ, nhiếp ảnh gia, nhà văn, biên kịch, nhạc sĩ, ca sĩ, kiến trúc sư, nhà thiết kế nội thất.",
-    S: "(Xã hội) – Giáo dục, dịch vụ cộng đồng: Giáo viên, giảng viên, tư vấn viên, bác sĩ, y tá, công tác xã hội, hướng dẫn viên du lịch, tổ chức sự kiện.",
-    E: "(Lãnh đạo) – Quản lý, kinh doanh: Quản lý doanh nghiệp, giám đốc điều hành, nhân viên kinh doanh, tiếp thị, tài chính, chính trị gia, luật sư, nhà báo.",
-    C: "(Cẩn thận) – Văn phòng, hành chính: Nhân viên kế toán, tài chính, kiểm toán, nhân viên hành chính, nhân sự, quản lý hồ sơ, thư ký, văn thư."
-  };
-
+function displayResultIQ(iq, correctCount) {
   const resultContainer = document.getElementById('result-container');
-  resultContainer.innerHTML = `
-    <h3>Kết quả của bạn:</h3>
-    <p><strong>${trait}</strong>: ${descriptions[trait]}</p>
+  resultContainer.innerHTML = '';  // Xóa nội dung cũ
+
+  const result = document.createElement('div');
+  result.innerHTML = `
+    <h3>Kết quả bài kiểm tra IQ:</h3>
+    <p>Số câu trả lời đúng: ${correctCount}</p>
+    <p>Điểm IQ của bạn: ${Math.round(iq)}</p>
   `;
+  resultContainer.appendChild(result);
 }
 
 

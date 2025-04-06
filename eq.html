@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MBTI Personality Test</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+
+    .question {
+      margin-bottom: 20px;
+    }
+
+    .options {
+      list-style: none;
+      padding: 0;
+    }
+
+    .options li {
+      margin: 10px 0;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #CECABA;
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: steelblue;
+    }
+  </style>
+</head>
+<body>
+    <header>
+        <img src="img/logo.png" alt="Logo">
+        <div>Night Owl</div>
+        <nav>
+            <ul class="menu">
+              <li><a href="#">Trang chủ</a></li>
+              <li>
+                <a href="#">Bài test tâm lý</a>
+                <ul class="submenu">
+                  <li><a href="#">Bài test MBTI</a></li>
+                  <li><a href="#">Bài test DISC</a></li>
+                  <li><a href="#">Bài test HOLLAND</a></li>
+                  <li><a href="#">Bài test BIG FIVE</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="#">Bài test trí tuệ & cảm xúc</a>
+                <ul class="submenu">
+                  <li><a href="#">Bài test IQ</a></li>
+                  <li><a href="#">Bài test EQ</a></li>
+                </ul>
+              </li>
+              <li><a href="post.html">Bài viết</a></li>
+              <li id="user-menu">
+                <a href="login.html">Đăng nhập</a>
+              </li>
+            </ul>
+          </nav>
+    </header>
+
+    <div class="container">
+        <div id="test-container"></div>
+        <button id="submit" onclick="submitTest()">Submit</button>
+        <div id="result-container"></div>
+      </div>
+  
+
+  <footer>
+    <div class="menuF">
+      <div>
+        <img src="img/logo.png" alt="" width="100px" height="100px">
+        <p>"Night Owl – Thức cùng bạn, hiểu chính mình."</p>
+      </div>
+      <div>
+        <h1>CÁC BÀI TEST</h1>
+        <p>Bài test MBTI</p>
+        <p>Bài test DISC</p>
+        <p>Bài test HOLLAND</p>
+        <p>Bài test BIG FIVE</p>
+        <p>Bài test IQ</p>
+        <p>Bài test EQ</p>
+      </div>
+      <div>
+        <h1>LIÊN HỆ VỚI CHÚNG TÔI</h1>
+        <p>Phone: 0904 693 310</p>
+        <p>Email: nightowl@gmail.com</p>
+      </div>
+    </div>
+    <hr>
+    <div class="end">
+      © 2025 Night Owl. All rights reserved.
+    </div>
+  </footer>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Lấy dữ liệu từ API
+      fetch('http://127.0.0.1:8000/v1/test/67f23660d22a5af8015cf86f') // URL API của bạn
+        .then(response => response.json())
+        .then(data => {
+          renderTestEQ(data); // Gọi hàm renderTestEQ khi nhận dữ liệu
+        })
+        .catch(error => console.error('Error fetching the test data:', error));
+    });
+
+    // Hàm hiển thị bài kiểm tra EQ từ dữ liệu API
+    function renderTestEQ(testData) {
+      const testContainer = document.getElementById('test-container');
+      testContainer.innerHTML = '';  // Xóa nội dung cũ
+
+      const title = document.createElement('h2');
+      title.innerText = testData.title;
+      testContainer.appendChild(title);
+
+      const description = document.createElement('p');
+      description.innerText = testData.description;
+      testContainer.appendChild(description);
+
+      // Render các câu hỏi và lựa chọn
+      testData.questions.forEach((question, index) => {
+        const questionElement = document.createElement('div');
+        questionElement.classList.add('question');
+
+        const questionText = document.createElement('p');
+        questionText.innerText = question.question;
+        questionElement.appendChild(questionText);
+
+        const optionsList = document.createElement('ul');
+        optionsList.classList.add('options');
+
+        question.options.forEach(option => {
+          const optionItem = document.createElement('li');
+
+          const optionLabel = document.createElement('label');
+          const optionInput = document.createElement('input');
+
+          optionInput.type = 'radio';
+          optionInput.name = 'question-' + index;
+          optionInput.value = option.value;
+
+          optionLabel.appendChild(optionInput);
+          optionLabel.appendChild(document.createTextNode(' ' + option.text));
+
+          optionItem.appendChild(optionLabel);
+          optionsList.appendChild(optionItem);
+        });
+
+        questionElement.appendChild(optionsList);
+        testContainer.appendChild(questionElement);
+      });
+    }
+
+    // Hàm tính điểm EQ khi người dùng gửi bài kiểm tra
+    function submitTest() {
+      const questions = document.querySelectorAll('.question');
+      let totalScore = 0;
+
+      questions.forEach((question, index) => {
+        const selectedOption = question.querySelector(`input[name="question-${index}"]:checked`);
+        if (selectedOption) {
+          totalScore += parseInt(selectedOption.value);  // Cộng điểm theo lựa chọn
+        }
+      });
+
+      // Hiển thị kết quả EQ
+      displayResultEQ(totalScore);
+    }
+
+    // Hàm hiển thị kết quả EQ
+    function displayResultEQ(totalScore) {
+      const resultContainer = document.getElementById('result-container');
+      resultContainer.innerHTML = '';  // Xóa nội dung cũ
+
+      let resultMessage = '';
+      if (totalScore >= 65) {
+        resultMessage = `
+          <h3>✅ EQ Cao (Từ 65 - 90 điểm)</h3>
+          <p>🔹 Bạn có trí tuệ cảm xúc tốt! Bạn biết cách kiểm soát cảm xúc, đồng cảm với người khác và xử lý tình huống một cách khéo léo. Điều này giúp bạn tạo ra mối quan hệ tốt đẹp và có một tinh thần vững vàng.</p>
+        `;
+      } else if (totalScore >= 35) {
+        resultMessage = `
+          <h3>⚠️ EQ Trung Bình (Từ 35 - 64 điểm)</h3>
+          <p>🔹 Bạn có mức độ EQ khá ổn định, nhưng vẫn có lúc bị cảm xúc chi phối. Bạn cần rèn luyện thêm khả năng kiểm soát bản thân và xử lý tình huống một cách bình tĩnh hơn.</p>
+        `;
+      } else {
+        resultMessage = `
+          <h3>❌ EQ Thấp (Dưới 35 điểm)</h3>
+          <p>🔹 Bạn có thể gặp khó khăn trong việc nhận diện và kiểm soát cảm xúc. Điều này có thể ảnh hưởng đến các mối quan hệ và khả năng giao tiếp của bạn. Hãy dành thời gian rèn luyện trí tuệ cảm xúc để cải thiện bản thân!</p>
+        `;
+      }
+
+      resultContainer.innerHTML = resultMessage;
+    }
+  </script>
+</body>
+</html>

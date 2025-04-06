@@ -1,152 +1,293 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trắc nghiệm DISC</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .question {
-            margin-bottom: 15px;
-        }
-        button {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MBTI Personality Test</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+
+    .question {
+      margin-bottom: 20px;
+    }
+
+    .options {
+      list-style: none;
+      padding: 0;
+    }
+
+    .options li {
+      margin: 10px 0;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #CECABA;
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: steelblue;
+    }
+  </style>
 </head>
 <body>
-    <h2>Trắc nghiệm DISC (3 câu hỏi demo)</h2>
-    
-    <div id="quiz">
-        <div class="question">
-            <p>1. Khi đối mặt với một thử thách, bạn thường:</p>
-            <input type="radio" name="q1" value="D"> Đưa ra quyết định nhanh chóng.<br>
-            <input type="radio" name="q1" value="S"> Tìm kiếm sự đồng thuận.<br>
-            <input type="radio" name="q1" value="I"> Thuyết phục và truyền cảm hứng.<br>
-            <input type="radio" name="q1" value="C"> Phân tích kỹ lưỡng trước khi quyết định.<br>
-        </div>
-        
-        <div class="question">
-            <p>2. Khi làm việc nhóm, bạn thường:</p>
-            <input type="radio" name="q2" value="D"> Thích giữ vị trí lãnh đạo.<br>
-            <input type="radio" name="q2" value="I"> Tạo ra không khí vui vẻ.<br>
-            <input type="radio" name="q2" value="S"> Hỗ trợ và giúp đỡ mọi người.<br>
-            <input type="radio" name="q2" value="C"> Đảm bảo công việc đúng quy trình.<br>
-        </div>
-        
-        <div class="question">
-            <p>3. Khi gặp vấn đề phức tạp, bạn thường:</p>
-            <input type="radio" name="q3" value="D"> Tìm cách giải quyết ngay lập tức.<br>
-            <input type="radio" name="q3" value="C"> Phân tích chi tiết và tìm hiểu kỹ trước khi hành động.<br>
-            <input type="radio" name="q3" value="I"> Chia sẻ vấn đề với người khác để nhận phản hồi.<br>
-            <input type="radio" name="q3" value="S"> Đợi xem có ai khác có thể giúp mình không.<br>
-        </div>
+    <header>
+        <img src="img/logo.png" alt="Logo">
+        <div>Night Owl</div>
+        <nav>
+            <ul class="menu">
+              <li><a href="#">Trang chủ</a></li>
+              <li>
+                <a href="#">Bài test tâm lý</a>
+                <ul class="submenu">
+                  <li><a href="#">Bài test MBTI</a></li>
+                  <li><a href="#">Bài test DISC</a></li>
+                  <li><a href="#">Bài test HOLLAND</a></li>
+                  <li><a href="#">Bài test BIG FIVE</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="#">Bài test trí tuệ & cảm xúc</a>
+                <ul class="submenu">
+                  <li><a href="#">Bài test IQ</a></li>
+                  <li><a href="#">Bài test EQ</a></li>
+                </ul>
+              </li>
+              <li><a href="post.html">Bài viết</a></li>
+              <li id="user-menu">
+                <a href="login.html">Đăng nhập</a>
+              </li>
+            </ul>
+          </nav>
+    </header>
 
-        <div class="question">
-            <p>4. Điều gì quan trọng nhất với bạn trong công việc?</p>
-            <input type="radio" name="q4" value="S"> Sự ổn định và hài hòa.<br>
-            <input type="radio" name="q4" value="C"> Các mối quan hệ và sự công nhận.<br>
-            <input type="radio" name="q4" value="I"> Sự chính xác và chất lượng.<br>
-            <input type="radio" name="q4" value="D"> Thành công và kết quả.<br>
-        </div>
+  <div class="container">
+    <div id="test-container"></div>
+    <button id="submit" onclick="submitTest()">Submit</button>
+    <div id="result-container"></div>
+  </div>
+  
 
-        <div class="question">
-            <p>5. Khi bị chỉ trích, bạn thường:</p>
-            <input type="radio" name="q5" value="S"> Cảm thấy khó chịu nhưng không thể hiện ra ngoài.<br>
-            <input type="radio" name="q5" value="I"> Cố gắng làm cho không khí bớt căng thẳng.<br>
-            <input type="radio" name="q5" value="C"> Xem xét cẩn thận lời phê bình và điều chỉnh bản thân.<br>
-            <input type="radio" name="q5" value="D"> Phản ứng mạnh mẽ và bảo vệ ý kiến của mình.<br>
-        </div>
+  <footer>
+    <div class="menuF">
+      <div>
+        <img src="img/logo.png" alt="" width="100px" height="100px">
+        <p>"Night Owl – Thức cùng bạn, hiểu chính mình."</p>
+      </div>
+      <div>
+        <h1>CÁC BÀI TEST</h1>
+        <p>Bài test MBTI</p>
+        <p>Bài test DISC</p>
+        <p>Bài test HOLLAND</p>
+        <p>Bài test BIG FIVE</p>
+        <p>Bài test IQ</p>
+        <p>Bài test EQ</p>
+      </div>
+      <div>
+        <h1>LIÊN HỆ VỚI CHÚNG TÔI</h1>
+        <p>Phone: 0904 693 310</p>
+        <p>Email: nightowl@gmail.com</p>
+      </div>
+    </div>
+    <hr>
+    <div class="end">
+      © 2025 Night Owl. All rights reserved.
+    </div>
+  </footer>
 
-        <div class="question">
-            <p>6. Bạn thích làm việc trong môi trường như thế nào?</p>
-            <input type="radio" name="q6" value="I"> Năng động, nhiều sự kiện và giao tiếp.<br>
-            <input type="radio" name="q6" value="D"> Nhanh chóng, thử thách, nhiều cơ hội.<br>
-            <input type="radio" name="q6" value="S"> Ổn định, thân thiện và gắn kết.<br>
-            <input type="radio" name="q6" value="C"> Có hệ thống, trật tự và rõ ràng.<br>
-        </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Lấy dữ liệu từ API
+      fetch('http://127.0.0.1:8000/v1/test/67f1461cae92bae0f8bb9fed')
+        .then(response => response.json())
+        .then(data => {
+          renderTest(data);
+        })
+        .catch(error => console.error('Error fetching the test data:', error));
+    });
 
-        <div class="question">
-            <p>7. Khi có quá nhiều việc phải làm, bạn thường:</p>
-            <input type="radio" name="q7" value="I"> Nhờ người khác giúp đỡ và chia sẻ công việc.<br>
-            <input type="radio" name="q7" value="S"> Sắp xếp thứ tự ưu tiên và làm từng việc một.<br>
-            <input type="radio" name="q7" value="D"> Tập trung vào mục tiêu chính và ra quyết định nhanh.<br>
-            <input type="radio" name="q7" value="C"> Lập kế hoạch chi tiết và làm theo từng bước.<br>
-        </div>
+    function renderTest(testData) {
+  const testContainer = document.getElementById('test-container');
 
-        <div class="question">
-            <p>8. Khi giao tiếp với người khác, bạn thường:</p>
-            <input type="radio" name="q8" value="S"> Thẳng thắn và đi vào vấn đề chính.<br>
-            <input type="radio" name="q8" value="I"> Cởi mở, nói nhiều và thích chia sẻ.<br>
-            <input type="radio" name="q8" value="D"> Tập trung vào mục tiêu chính và ra quyết định nhanh.<br>
-            <input type="radio" name="q8" value="C"> Nói có trọng tâm và dựa trên dữ liệu.<br>
-        </div>
+  const title = document.createElement('h2');
+  title.innerText = testData.title;
+  testContainer.appendChild(title);
 
-        <div class="question">
-            <p>9. Điều gì khiến bạn cảm thấy khó chịu nhất?</p>
-            <input type="radio" name="q9" value="C"> Sự thiếu chính xác và sai sót.<br>
-            <input type="radio" name="q9" value="D"> Sự trì hoãn và thiếu quyết đoán.<br>
-            <input type="radio" name="q9" value="I"> Sự lạnh lùng và xa cách.<br>
-            <input type="radio" name="q9" value="S"> Mâu thuẫn và tranh cãi.<br>
-        </div>
+  testData.questions.forEach((question, index) => {
+    const questionElement = document.createElement('div');
+    questionElement.classList.add('question');
 
-        <div class="question">
-            <p>10. Khi làm việc với người khác, bạn ưu tiên:</p>
-            <input type="radio" name="q10" value="D"> Đạt được kết quả nhanh chóng.<br>
-            <input type="radio" name="q10" value="I"> Tạo ra sự kết nối và tương tác tốt.<br>
-            <input type="radio" name="q10" value="C"> Đảm bảo chất lượng và quy trình chính xác.<br>
-            <input type="radio" name="q10" value="S"> Xây dựng sự tin tưởng và hợp tác.<br>
-        </div>
+    const questionText = document.createElement('p');
+    questionText.innerText = question.question;
+    questionElement.appendChild(questionText);
 
-        <div class="question">
-            <p>11. Bạn phản ứng thế nào khi có thay đổi lớn?</p>
-            <input type="radio" name="q10" value="C"> Xem xét mọi khía cạnh trước khi hành động.<br>
-            <input type="radio" name="q10" value="D"> Thích ứng nhanh và kiểm soát tình hình.<br>
-            <input type="radio" name="q10" value="S"> Cần thời gian để thích nghi và điều chỉnh.<br>
-            <input type="radio" name="q10" value="I"> Nhìn vào mặt tích cực và động viên mọi người.<br>
-        </div>
+    const optionsList = document.createElement('ul');
+    optionsList.classList.add('options');
 
-        <div class="question">
-            <p>11. Bạn phản ứng thế nào khi có thay đổi lớn?</p>
-            <input type="radio" name="q10" value="C"> Xem xét mọi khía cạnh trước khi hành động.<br>
-            <input type="radio" name="q10" value="D"> Thích ứng nhanh và kiểm soát tình hình.<br>
-            <input type="radio" name="q10" value="S"> Cần thời gian để thích nghi và điều chỉnh.<br>
-            <input type="radio" name="q10" value="I"> Nhìn vào mặt tích cực và động viên mọi người.<br>
-        </div>
+    question.options.forEach(option => {
+      const optionItem = document.createElement('li');
+      const optionLabel = document.createElement('label');
+      const optionInput = document.createElement('input');
+      optionInput.type = 'radio';
+      optionInput.name = 'question-' + index;
+      optionInput.value = option.value;
+      optionLabel.appendChild(optionInput);
+      optionLabel.appendChild(document.createTextNode(option.text));
+      optionItem.appendChild(optionLabel);
+      optionsList.appendChild(optionItem);
+    });
 
-    </div>  
-    
-    <button onclick="calculateScore()">Xem kết quả</button>
-    <h3 id="result"></h3>
+    questionElement.appendChild(optionsList);
+    testContainer.appendChild(questionElement);
+  });
+}
 
-    <script>
-        function calculateScore() {
-            let scores = { D: 0, I: 0, S: 0, C: 0 };
-            let questions = ["q1", "q2", "q3", "q4", "q5", "q6", "q7"];
 
-            questions.forEach(q => {
-                let answer = document.querySelector(`input[name="${q}"]:checked`);
-                if (answer) {
-                    scores[answer.value]++;
-                }
-            });
 
-            let maxScore = Math.max(scores.D, scores.I, scores.S, scores.C);
-            let result = Object.keys(scores).filter(key => scores[key] === maxScore);
-            document.getElementById("result").innerText = "Bạn thuộc nhóm: " + result.join(" - ");
-            console.log(scores);
-        }
-    </script>
+function submitTest() {
+  const answers = [];
+  const questions = document.querySelectorAll('.question');
+  const resultCount = { D: 0, I: 0, S: 0, C: 0 };
+
+  questions.forEach((question, index) => {
+    const selectedOption = question.querySelector('input[type="radio"]:checked');
+    if (selectedOption) {
+      const value = parseInt(selectedOption.value);
+      const trait = selectedOption.dataset.trait;
+
+      answers.push({
+        questionIndex: index,
+        answer: selectedOption.value,
+        trait: trait
+      });
+
+      if (trait && resultCount.hasOwnProperty(trait)) {
+        resultCount[trait] += value;
+      }
+    }
+  });
+
+  if (answers.length === questions.length) {
+    console.log('Submitted answers:', answers);
+    const sortedTraits = Object.entries(resultCount).sort((a, b) => b[1] - a[1]);
+    const mainTrait = sortedTraits[0][0];
+    const secondTrait = sortedTraits[1][0];
+
+    // Gộp thành loại DISC kép, VD: DI, DC, v.v.
+    const fullType = (mainTrait + secondTrait).toUpperCase();
+
+    showResultDISC(fullType);
+    alert('Bạn đã hoàn thành bài test');
+  } else {
+    alert('Vui lòng chọn hết các câu hỏi');
+  }
+}
+
+// Hàm hiển thị kết quả từ danh sách DISC đầy đủ của bạn
+function showResultDISC(type) {
+  const results = [
+    {
+      "type": "D",
+      "description": "Người chiến thắng (D): tự tin và đặt trọng tâm vào việc hoàn thành các kết quả cuối cùng."
+    },
+    {
+      "type": "DC",
+      "description": "Người thách thức (DC): siêng năng, quyết tâm, sáng tạo và luôn đưa ra những tiêu chuẩn cao cho bản thân và những người xung quanh."
+    },
+    {
+      "type": "DI",
+      "description": "Người tìm kiếm (DI): hướng tới kết quả và tạo ảnh hưởng với người khác thông qua hành động."
+    },
+    {
+      "type": "ID",
+      "description": "Người chấp nhận rủi ro (ID): năng lượng, thích phiêu lưu, tham vọng và muốn tạo ảnh hưởng đến người khác."
+    },
+    {
+      "type": "I",
+      "description": "Người Nhiệt tình (I): cởi mở và chú trọng vào các mối quan hệ cũng như khả năng tạo ảnh hưởng và thuyết phục người khác."
+    },
+    {
+      "type": "IS",
+      "description": "Người Bạn thân thiết (IS): thân thiện, hòa đồng, hỗ trợ và có khả năng tiếp nhận vấn đề theo hướng lạc quan."
+    },
+    {
+      "type": "S",
+      "description": "Người Hòa giải (S): đáng tin cậy và coi trọng sự trung thành."
+    },
+    {
+      "type": "SI",
+      "description": "Người cộng tác (SI): thân thiện, hợp tác, khuyến khích và thu hút mọi người bằng sự đồng cảm và kiên nhẫn."
+    },
+    {
+      "type": "SC",
+      "description": "Kỹ thuật viên (SC): thoải mái, kiên nhẫn, nhận được sự tin cậy từ mọi người thông qua khả năng tự chủ và giao tiếp."
+    },
+    {
+      "type": "C",
+      "description": "Nhà phân tích (C): tập trung vào sự chính xác, ổn định, chân thành và khéo léo."
+    },
+    {
+      "type": "CS",
+      "description": "Người hiền lành (CS): thận trọng, trật tự, chính xác thông qua tính thực tế và chi tiết."
+    },
+    {
+      "type": "CD",
+      "description": "Người cầu toàn (CD): kiên quyết, tư duy khách quan, kỷ luật và tuân theo các quy chuẩn nghiêm ngặt."
+    }
+  ];
+
+  const resultContainer = document.getElementById('result-container');
+  resultContainer.innerHTML = '';
+
+  // Tìm kết quả chính xác
+  let resultObj = results.find(r => r.type === type);
+
+  // Nếu không có DISC kép như "DI" thì fallback về D, I, S hoặc C
+  if (!resultObj) {
+    const fallback = type[0]; // lấy chữ đầu
+    resultObj = results.find(r => r.type === fallback);
+  }
+
+  if (resultObj) {
+    const resultText = document.createElement('p');
+    resultText.innerHTML = `<strong>${resultObj.type}</strong>: ${resultObj.description}`;
+
+    const xemthemButton = document.createElement('button');
+    xemthemButton.textContent = 'Xem thêm';
+    xemthemButton.style.marginTop = '10px';
+    xemthemButton.addEventListener('click', function () {
+      window.location.href = "https://example.com";
+    });
+
+    resultContainer.appendChild(resultText);
+    resultContainer.appendChild(xemthemButton);
+  } else {
+    resultContainer.textContent = "Không tìm thấy kết quả phù hợp.";
+  }
+}
+
+
+  </script>
 </body>
 </html>
