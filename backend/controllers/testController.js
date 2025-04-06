@@ -11,4 +11,5 @@ const getAll = async(id) => {
         throw new Error('lỗi lấy dữ liệu');
     }
 }
+
 module.exports = {getAll};

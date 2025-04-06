@@ -33,6 +33,7 @@ const userData = new mongoose.Schema({
     },
   ],
 });
+
 const accountData = new mongoose.Schema({
   fullname: {
     type: String,
@@ -101,10 +102,32 @@ const postSchema = mongoose.Schema(
   }
 );
 
-
+const resultSchema = mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "account", // Liên kết với tài khoản
+      required: true,
+    },
+    testId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "tests", // Liên kết với bài test
+      required: true,
+    },
+    result: {
+      type: String, // Kết quả bài test (ví dụ: "INFP", "DISC-D")
+      required: true,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  { timestamps: true }
+);
 
 userData.plugin(mongoosePaginate);
 const Post = mongoose.model("Post", postSchema);
 const account = mongoose.model("account", accountData);
-
-module.exports = { account, Post };
+const Result = mongoose.model("Result", resultSchema);
+module.exports = { account, Post, Result };

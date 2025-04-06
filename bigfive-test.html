@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HOLLAND Personality Test</title>
+  <title>Big Five Personality Test</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
     body {
@@ -145,7 +145,7 @@
   <script>
     const user = JSON.parse(localStorage.getItem("user"));
     const userMenu = document.getElementById("user-menu");
-    const testId = "67f14b42ae92bae0f8bb9fef"; // ID bài test HOLLAND
+    const testId = "67f22baed22a5af8015cf86b"; // ID bài test Big Five
     let test = null;
 
     // Cập nhật giao diện người dùng nếu đã đăng nhập
@@ -254,7 +254,7 @@
     async function submitTest() {
       const answers = [];
       const questions = document.querySelectorAll('.question');
-      const resultCount = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+      const resultCount = { O: 0, C: 0, E: 0, A: 0, N: 0 };
 
       questions.forEach((question, index) => {
         const selectedOption = question.querySelector('input[type="radio"]:checked');
@@ -315,18 +315,17 @@
     function showResult(result) {
       const resultContainer = document.getElementById('result-container');
       const descriptions = {
-        R: "(Thực tế) – Kỹ thuật, công nghệ: Kỹ sư cơ khí, kỹ sư điện, công nghệ thông tin, kỹ thuật viên sửa chữa, thợ điện, thợ mộc, nông nghiệp, lâm nghiệp, chăn nuôi.",
-        I: "(Nghiên cứu) – Khoa học, nghiên cứu: Nhà khoa học, nhà nghiên cứu, bác sĩ, kỹ sư phần mềm, lập trình viên, phân tích dữ liệu, thống kê.",
-        A: "(Nghệ thuật) – Sáng tạo, nghệ thuật: Nhà thiết kế đồ họa, họa sĩ, nhiếp ảnh gia, nhà văn, biên kịch, nhạc sĩ, ca sĩ, kiến trúc sư, nhà thiết kế nội thất.",
-        S: "(Xã hội) – Giáo dục, dịch vụ cộng đồng: Giáo viên, giảng viên, tư vấn viên, bác sĩ, y tá, công tác xã hội, hướng dẫn viên du lịch, tổ chức sự kiện.",
-        E: "(Lãnh đạo) – Quản lý, kinh doanh: Quản lý doanh nghiệp, giám đốc điều hành, nhân viên kinh doanh, tiếp thị, tài chính, chính trị gia, luật sư, nhà báo.",
-        C: "(Cẩn thận) – Văn phòng, hành chính: Nhân viên kế toán, tài chính, kiểm toán, nhân viên hành chính, nhân sự, quản lý hồ sơ, thư ký, văn thư."
+        O: "Openness - Sáng tạo, tò mò, yêu thích sự mới mẻ.",
+        C: "Conscientiousness - Kỷ luật, có tổ chức, đáng tin cậy.",
+        E: "Extraversion - Hướng ngoại, năng động, thích giao tiếp.",
+        A: "Agreeableness - Hòa đồng, thân thiện, dễ hợp tác.",
+        N: "Neuroticism - Nhạy cảm, dễ lo âu, dễ bị căng thẳng."
       };
 
       resultContainer.innerHTML = `
         <h3>Kết quả của bạn:</h3>
         <p><strong>${result}</strong>: ${descriptions[result]}</p>
-        <div class="feedback-section">
+      <div class="feedback-section">
       <h3>Gửi phản hồi của bạn:</h3>
       <textarea id="feedback-input" rows="4" placeholder="Nhập phản hồi của bạn..."></textarea>
       <button id="submit-feedback">Gửi phản hồi</button>

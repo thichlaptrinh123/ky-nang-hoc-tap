@@ -13,18 +13,34 @@
 
 <body>
     <header>
-        <img src="img/logo.png" alt="Logo">
+        <a href="index.html"><img src="img/logo.png" alt="Logo"></a>
+        <div>Night Owl</div>
         <nav>
             <ul class="menu">
-                <li><a href="index.html">Trang chủ</a></li>
-                <li><a href="#">Bài test tâm lý</a></li>
-                <li><a href="#">Bài test trí tuệ & cảm xúc</a></li>
-                <li><a href="post.html">Bài viết</a></li>
-                <li id="user-menu">
-                    <a href="login.html">Đăng nhập</a>
-                </li>
+              <li><a href="index.html">Trang chủ</a></li>
+              <li>
+                <a href="#">Bài test tâm lý</a>
+                <ul class="submenu">
+                  <li><a href="mbti.html" class="test-link">Bài test MBTI</a></li>
+                  <li><a href="disc.html" class="test-link">Bài test DISC</a></li>
+                  <li><a href="holland.html" class="test-link">Bài test HOLLAND</a></li>
+                  <li><a href="bigfive-test.html" class="test-link">Bài test BIG FIVE</a></li>
+                </ul>
+                
+              </li>
+              <li>
+                <a href="#">Bài test trí tuệ & cảm xúc</a>
+                <ul class="submenu">
+                  <li><a href="iq.html">Bài test IQ</a></li>
+                  <li><a href="eq.html">Bài test EQ</a></li>
+                </ul>
+              </li>
+              <li><a href="post.html">Bài viết</a></li>
+              <li id="user-menu">
+                <a href="login.html">Đăng nhập</a>
+              </li>
             </ul>
-        </nav>
+          </nav>
     </header>
     <main>
         <div class="post-detail" id="post-detail">

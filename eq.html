@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MBTI Personality Test</title>
+  <title>EQ Test</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
     body {
@@ -20,7 +21,6 @@
       background-color: #fff;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
-
 
     .question {
       margin-bottom: 20px;
@@ -49,45 +49,71 @@
     button:hover {
       background-color: steelblue;
     }
+
+    .completed-message {
+      text-align: center;
+      background-color: #f9f9f9;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+
+    .completed-message h2 {
+      color: #4caf50;
+    }
+
+    .completed-message button {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .completed-message button:hover {
+      background-color: #45a049;
+    }
   </style>
 </head>
-<body>
-    <header>
-        <img src="img/logo.png" alt="Logo">
-        <div>Night Owl</div>
-        <nav>
-            <ul class="menu">
-              <li><a href="#">Trang chủ</a></li>
-              <li>
-                <a href="#">Bài test tâm lý</a>
-                <ul class="submenu">
-                  <li><a href="#">Bài test MBTI</a></li>
-                  <li><a href="#">Bài test DISC</a></li>
-                  <li><a href="#">Bài test HOLLAND</a></li>
-                  <li><a href="#">Bài test BIG FIVE</a></li>
-                </ul>
-              </li>
-              <li>
-                <a href="#">Bài test trí tuệ & cảm xúc</a>
-                <ul class="submenu">
-                  <li><a href="#">Bài test IQ</a></li>
-                  <li><a href="#">Bài test EQ</a></li>
-                </ul>
-              </li>
-              <li><a href="post.html">Bài viết</a></li>
-              <li id="user-menu">
-                <a href="login.html">Đăng nhập</a>
-              </li>
-            </ul>
-          </nav>
-    </header>
 
-    <div class="container">
-        <div id="test-container"></div>
-        <button id="submit" onclick="submitTest()">Submit</button>
-        <div id="result-container"></div>
-      </div>
-  
+<body>
+  <header>
+    <a href="index.html"><img src="img/logo.png" alt="Logo"></a>
+    <div>Night Owl</div>
+    <nav>
+      <ul class="menu">
+        <li><a href="index.html">Trang chủ</a></li>
+        <li>
+          <a href="#">Bài test tâm lý</a>
+          <ul class="submenu">
+            <li><a href="mbti.html" class="test-link">Bài test MBTI</a></li>
+            <li><a href="disc.html" class="test-link">Bài test DISC</a></li>
+            <li><a href="holland.html" class="test-link">Bài test HOLLAND</a></li>
+            <li><a href="bigfive-test.html" class="test-link">Bài test BIG FIVE</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="#">Bài test trí tuệ & cảm xúc</a>
+          <ul class="submenu">
+            <li><a href="iq.html">Bài test IQ</a></li>
+            <li><a href="eq.html">Bài test EQ</a></li>
+          </ul>
+        </li>
+        <li><a href="post.html">Bài viết</a></li>
+        <li id="user-menu">
+          <a href="login.html">Đăng nhập</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div id="test-container"></div>
+    <div id="result-container"></div>
+  </div>
 
   <footer>
     <div class="menuF">
@@ -116,32 +142,76 @@
     </div>
   </footer>
 
-
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Lấy dữ liệu từ API
-      fetch('http://127.0.0.1:8000/v1/test/67f23660d22a5af8015cf86f') // URL API của bạn
-        .then(response => response.json())
-        .then(data => {
-          renderTestEQ(data); // Gọi hàm renderTestEQ khi nhận dữ liệu
-        })
-        .catch(error => console.error('Error fetching the test data:', error));
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userMenu = document.getElementById("user-menu");
+    const testId = "67f23660d22a5af8015cf86f"; // ID bài test EQ
+    let test = null;
+
+    // Cập nhật giao diện người dùng nếu đã đăng nhập
+    if (user) {
+      userMenu.innerHTML = `
+        <a href="#">${user.fullname}</a>
+        <ul class="submenu">
+          <li><a id="logout-btn" href="#">Đăng xuất</a></li>
+        </ul>
+      `;
+      document.getElementById("logout-btn").addEventListener("click", () => {
+        localStorage.removeItem("user");
+        window.location.href = "login.html";
+      });
+    }
+
+    // Khi trang đã tải
+    document.addEventListener('DOMContentLoaded', async function () {
+      if (!user) {
+        alert("Vui lòng đăng nhập để làm bài test.");
+        return window.location.href = "login.html";
+      }
+
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/v1/results/check-result/${user._id}/${testId}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          const testContainer = document.getElementById('test-container');
+          testContainer.innerHTML = `
+            <div class="completed-message">
+              <h2>Bạn đã hoàn thành bài test này!</h2>
+              <p>Kết quả của bạn là: <strong>${data.result.result}</strong></p>
+              <button id="retry-test">Làm lại bài test</button>
+            </div>
+          `;
+          document.getElementById('retry-test').addEventListener('click', () => {
+            testContainer.innerHTML = "";
+            fetchTest(testId);
+          });
+        } else {
+          fetchTest(testId);
+        }
+      } catch (error) {
+        console.error("Lỗi khi kiểm tra kết quả bài test:", error);
+        alert("Đã xảy ra lỗi. Vui lòng thử lại sau.");
+      }
     });
 
-    // Hàm hiển thị bài kiểm tra EQ từ dữ liệu API
-    function renderTestEQ(testData) {
-      const testContainer = document.getElementById('test-container');
-      testContainer.innerHTML = '';  // Xóa nội dung cũ
+    // Gọi API để lấy bài test
+    function fetchTest(testId) {
+      fetch(`http://127.0.0.1:8000/v1/test/${testId}`)
+        .then(response => response.json())
+        .then(data => {
+          test = data;
+          renderTest(data);
+        })
+        .catch(error => console.error('Error fetching the test data:', error));
+    }
 
+    function renderTest(testData) {
+      const testContainer = document.getElementById('test-container');
       const title = document.createElement('h2');
       title.innerText = testData.title;
       testContainer.appendChild(title);
 
-      const description = document.createElement('p');
-      description.innerText = testData.description;
-      testContainer.appendChild(description);
-
-      // Render các câu hỏi và lựa chọn
       testData.questions.forEach((question, index) => {
         const questionElement = document.createElement('div');
         questionElement.classList.add('question');
@@ -155,17 +225,13 @@
 
         question.options.forEach(option => {
           const optionItem = document.createElement('li');
-
           const optionLabel = document.createElement('label');
           const optionInput = document.createElement('input');
-
           optionInput.type = 'radio';
           optionInput.name = 'question-' + index;
           optionInput.value = option.value;
-
           optionLabel.appendChild(optionInput);
-          optionLabel.appendChild(document.createTextNode(' ' + option.text));
-
+          optionLabel.appendChild(document.createTextNode(option.text));
           optionItem.appendChild(optionLabel);
           optionsList.appendChild(optionItem);
         });
@@ -173,28 +239,70 @@
         questionElement.appendChild(optionsList);
         testContainer.appendChild(questionElement);
       });
+
+      const submitBtn = document.createElement("button");
+      submitBtn.textContent = "Gửi bài test";
+      submitBtn.addEventListener("click", submitTest);
+      testContainer.appendChild(submitBtn);
     }
 
-    // Hàm tính điểm EQ khi người dùng gửi bài kiểm tra
-    function submitTest() {
+    async function submitTest() {
+      const answers = [];
       const questions = document.querySelectorAll('.question');
       let totalScore = 0;
 
       questions.forEach((question, index) => {
-        const selectedOption = question.querySelector(`input[name="question-${index}"]:checked`);
+        const selectedOption = question.querySelector('input[type="radio"]:checked');
         if (selectedOption) {
-          totalScore += parseInt(selectedOption.value);  // Cộng điểm theo lựa chọn
+          answers.push({
+            questionIndex: index,
+            answer: selectedOption.value
+          });
+
+          // Cộng điểm theo lựa chọn
+          totalScore += parseInt(selectedOption.value);
         }
       });
 
-      // Hiển thị kết quả EQ
-      displayResultEQ(totalScore);
+      if (answers.length === questions.length) {
+        console.log('Submitted answers:', answers);
+
+        // Gửi kết quả lên MongoDB
+        if (!test || !test._id) {
+          return alert("Không thể xác định bài test.");
+        }
+
+        await saveResult(totalScore, test._id);
+
+        showResult(totalScore); // Hiện kết quả
+        alert('Bạn đã hoàn thành bài test');
+      } else {
+        alert('Vui lòng chọn hết các câu hỏi');
+      }
     }
 
-    // Hàm hiển thị kết quả EQ
-    function displayResultEQ(totalScore) {
+    async function saveResult(result, testId) {
+      try {
+        const response = await fetch("http://localhost:8000/v1/results/save-result", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user._id,
+            testId: testId,
+            result: result,
+          }),
+        });
+
+        const data = await response.json();
+        alert(data.message);
+      } catch (error) {
+        console.error("Lỗi khi lưu kết quả:", error);
+      }
+    }
+
+    function showResult(totalScore) {
       const resultContainer = document.getElementById('result-container');
-      resultContainer.innerHTML = '';  // Xóa nội dung cũ
+      resultContainer.innerHTML = '';
 
       let resultMessage = '';
       if (totalScore >= 65) {
@@ -218,4 +326,5 @@
     }
   </script>
 </body>
+
 </html>

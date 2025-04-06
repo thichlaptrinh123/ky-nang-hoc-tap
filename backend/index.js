@@ -53,7 +53,16 @@ mongoose
 // Định nghĩa router cho tài khoản
 app.use("/v1/account", accountRoutes);
 
+// Định nghĩa router cho bài test
 app.use("/v1/test", testRoutes);
+
+const resultRoutes = require("./routes/results"); // Import route results
+
+// Định nghĩa router cho kết quả
+app.use("/v1/results", resultRoutes);
+
+const feedbackRoutes = require("./routes/feedbacks");
+app.use("/v1/feedbacks", feedbackRoutes);
 
 // API lấy danh sách bài viết
 app.get("/v1/posts", async (req, res) => {

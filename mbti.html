@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,45 +50,73 @@
     button:hover {
       background-color: steelblue;
     }
+
+    .completed-message {
+      text-align: center;
+      background-color: #f9f9f9;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+
+    .completed-message h2 {
+      color: #4caf50;
+    }
+
+    .completed-message button {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .completed-message button:hover {
+      background-color: #45a049;
+    }
   </style>
 </head>
+
 <body>
-    <header>
-        <img src="img/logo.png" alt="Logo">
-        <div>Night Owl</div>
-        <nav>
-            <ul class="menu">
-              <li><a href="#">Trang chủ</a></li>
-              <li>
-                <a href="#">Bài test tâm lý</a>
-                <ul class="submenu">
-                  <li><a href="#">Bài test MBTI</a></li>
-                  <li><a href="#">Bài test DISC</a></li>
-                  <li><a href="#">Bài test HOLLAND</a></li>
-                  <li><a href="#">Bài test BIG FIVE</a></li>
-                </ul>
-              </li>
-              <li>
-                <a href="#">Bài test trí tuệ & cảm xúc</a>
-                <ul class="submenu">
-                  <li><a href="#">Bài test IQ</a></li>
-                  <li><a href="#">Bài test EQ</a></li>
-                </ul>
-              </li>
-              <li><a href="post.html">Bài viết</a></li>
-              <li id="user-menu">
-                <a href="login.html">Đăng nhập</a>
-              </li>
-            </ul>
-          </nav>
-    </header>
+  <header>
+    <a href="index.html"><img src="img/logo.png" alt="Logo"></a>
+    <div>Night Owl</div>
+    <nav>
+      <ul class="menu">
+        <li><a href="index.html">Trang chủ</a></li>
+        <li>
+          <a href="#">Bài test tâm lý</a>
+          <ul class="submenu">
+            <li><a href="mbti.html" class="test-link">Bài test MBTI</a></li>
+            <li><a href="disc.html" class="test-link">Bài test DISC</a></li>
+            <li><a href="holland.html" class="test-link">Bài test HOLLAND</a></li>
+            <li><a href="bigfive-test.html" class="test-link">Bài test BIG FIVE</a></li>
+          </ul>
+
+        </li>
+        <li>
+          <a href="#">Bài test trí tuệ & cảm xúc</a>
+          <ul class="submenu">
+            <li><a href="iq.html">Bài test IQ</a></li>
+            <li><a href="eq.html">Bài test EQ</a></li>
+          </ul>
+        </li>
+        <li><a href="post.html">Bài viết</a></li>
+        <li id="user-menu">
+          <a href="login.html">Đăng nhập</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
 
   <div class="container">
     <div id="test-container"></div>
-    <button id="submit" onclick="submitTest()">Submit</button>
     <div id="result-container"></div>
   </div>
-  
+
 
   <footer>
     <div class="menuF">
@@ -117,221 +146,328 @@
   </footer>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Lấy dữ liệu từ API
-      fetch('http://127.0.0.1:8000/v1/test/67f12357f51ce8b845d49538')
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userMenu = document.getElementById("user-menu");
+    const testLinks = document.querySelectorAll(".test-link");
+    const testId = "67f12357f51ce8b845d49538"; // ID bài test MBTI
+    let test = null;
+
+    // Cập nhật giao diện người dùng nếu đã đăng nhập
+    if (user) {
+      userMenu.innerHTML = `
+        <a href="#">${user.fullname}</a>
+        <ul class="submenu">
+          <li><a id="logout-btn" href="#">Đăng xuất</a></li>
+        </ul>
+      `;
+      document.getElementById("logout-btn").addEventListener("click", () => {
+        localStorage.removeItem("user");
+        window.location.href = "login.html";
+      });
+
+      // Gắn sự kiện click cho các link bài test
+      testLinks.forEach(link => {
+        link.addEventListener("click", async function (e) {
+          e.preventDefault();
+          const clickedTestId = this.getAttribute("href").split(".html")[0];
+          try {
+            const response = await fetch(`http://127.0.0.1:8000/v1/results/check-result/${user._id}/${clickedTestId}`);
+            const data = await response.json();
+            if (response.ok) {
+              alert(`Bạn đã hoàn thành bài test này! Kết quả của bạn là: ${data.result.result}`);
+              const retry = confirm("Bạn có muốn làm lại bài test không?");
+              if (retry) window.location.href = this.href;
+            } else {
+              window.location.href = this.href;
+            }
+          } catch (error) {
+            console.error("Lỗi khi kiểm tra kết quả bài test:", error);
+            alert("Đã xảy ra lỗi. Vui lòng thử lại sau.");
+          }
+        });
+      });
+    } else {
+      testLinks.forEach(link => {
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.location.href = "login.html";
+        });
+      });
+    }
+
+    // Khi trang đã tải
+    document.addEventListener('DOMContentLoaded', async function () {
+      if (!user) {
+        alert("Vui lòng đăng nhập để làm bài test.");
+        return window.location.href = "login.html";
+      }
+
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/v1/results/check-result/${user._id}/${testId}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          const testContainer = document.getElementById('test-container');
+          testContainer.innerHTML = `
+        <div class="completed-message">
+          <h2>Bạn đã hoàn thành bài test này!</h2>
+          <p>Kết quả của bạn là: <strong>${data.result.result}</strong></p>
+          <button id="retry-test">Làm lại bài test</button>
+        </div>
+      `;
+
+          // Hiển thị giải thích kết quả
+          showResult(data.result.result);
+
+          // Xử lý khi bấm "Làm lại bài test"
+          document.getElementById('retry-test').addEventListener('click', () => {
+            testContainer.innerHTML = "";
+            fetchTest(testId);
+          });
+        } else {
+          fetchTest(testId);
+        }
+      } catch (error) {
+        console.error("Lỗi khi kiểm tra kết quả bài test:", error);
+        alert("Đã xảy ra lỗi. Vui lòng thử lại sau.");
+      }
+    });
+
+    // Gọi API để lấy bài test
+    function fetchTest(testId) {
+      fetch(`http://127.0.0.1:8000/v1/test/${testId}`)
         .then(response => response.json())
         .then(data => {
+          test = data;
           renderTest(data);
         })
         .catch(error => console.error('Error fetching the test data:', error));
-    });
+    }
 
     function renderTest(testData) {
-  const testContainer = document.getElementById('test-container');
+      const testContainer = document.getElementById('test-container');
+      const title = document.createElement('h2');
+      title.innerText = testData.title;
+      testContainer.appendChild(title);
 
-  const title = document.createElement('h2');
-  title.innerText = testData.title;
-  testContainer.appendChild(title);
+      testData.questions.forEach((question, index) => {
+        const questionElement = document.createElement('div');
+        questionElement.classList.add('question');
 
-  testData.questions.forEach((question, index) => {
-    const questionElement = document.createElement('div');
-    questionElement.classList.add('question');
+        const questionText = document.createElement('p');
+        questionText.innerText = question.question;
+        questionElement.appendChild(questionText);
 
-    const questionText = document.createElement('p');
-    questionText.innerText = question.question;
-    questionElement.appendChild(questionText);
+        const optionsList = document.createElement('ul');
+        optionsList.classList.add('options');
 
-    const optionsList = document.createElement('ul');
-    optionsList.classList.add('options');
+        question.options.forEach(option => {
+          const optionItem = document.createElement('li');
+          const optionLabel = document.createElement('label');
+          const optionInput = document.createElement('input');
+          optionInput.type = 'radio';
+          optionInput.name = 'question-' + index;
+          optionInput.value = option.value;
+          optionLabel.appendChild(optionInput);
+          optionLabel.appendChild(document.createTextNode(option.text));
+          optionItem.appendChild(optionLabel);
+          optionsList.appendChild(optionItem);
+        });
 
-    question.options.forEach(option => {
-      const optionItem = document.createElement('li');
-      const optionLabel = document.createElement('label');
-      const optionInput = document.createElement('input');
-      optionInput.type = 'radio';
-      optionInput.name = 'question-' + index;
-      optionInput.value = option.value;
-      optionLabel.appendChild(optionInput);
-      optionLabel.appendChild(document.createTextNode(option.text));
-      optionItem.appendChild(optionLabel);
-      optionsList.appendChild(optionItem);
-    });
-
-    questionElement.appendChild(optionsList);
-    testContainer.appendChild(questionElement);
-  });
-}
-
-
-
-function submitTest() {
-  const answers = [];
-  const questions = document.querySelectorAll('.question');
-  const resultCount = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
-
-  // Thu thập câu trả lời và tính giá trị
-  questions.forEach((question, index) => {
-    const selectedOption = question.querySelector('input[type="radio"]:checked');
-    if (selectedOption) {
-      answers.push({
-        questionIndex: index,
-        answer: selectedOption.value
+        questionElement.appendChild(optionsList);
+        testContainer.appendChild(questionElement);
       });
 
-      // Cập nhật kết quả cho từng nhóm tính cách
-      const value = parseInt(selectedOption.value); // Lấy giá trị của lựa chọn
+      const submitBtn = document.createElement("button");
+      submitBtn.textContent = "Gửi bài test";
+      submitBtn.addEventListener("click", submitTest);
+      testContainer.appendChild(submitBtn);
+    }
 
-      // Ví dụ: Cập nhật nhóm tính cách E/I, S/N, T/F, J/P
-      if (index < 5) { // Giả sử câu hỏi 1-5 liên quan đến nhóm E/I
-        resultCount.E += value;
-        resultCount.I += (1 - value);
-      } else if (index < 10) { // Câu hỏi 6-10 liên quan đến nhóm S/N
-        resultCount.S += value;
-        resultCount.N += (1 - value);
-      } else if (index < 15) { // Câu hỏi 11-15 liên quan đến nhóm T/F
-        resultCount.T += value;
-        resultCount.F += (1 - value);
-      } else { // Câu hỏi 16-20 liên quan đến nhóm J/P
-        resultCount.J += value;
-        resultCount.P += (1 - value);
+    async function submitTest() {
+      const answers = [];
+      const questions = document.querySelectorAll('.question');
+      const resultCount = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+
+      questions.forEach((question, index) => {
+        const selectedOption = question.querySelector('input[type="radio"]:checked');
+        if (selectedOption) {
+          answers.push({
+            questionIndex: index,
+            answer: selectedOption.value
+          });
+
+          // Đếm số lượng từng trait
+          const trait = selectedOption.value.toUpperCase();
+          if (resultCount.hasOwnProperty(trait)) {
+            resultCount[trait]++;
+          }
+        }
+      });
+
+      if (answers.length === questions.length) {
+        console.log('Submitted answers:', answers);
+
+        // Ghép nhóm đối lập lại
+        let result = '';
+        result += resultCount.E >= resultCount.I ? 'E' : 'I';
+        result += resultCount.S >= resultCount.N ? 'S' : 'N';
+        result += resultCount.T >= resultCount.F ? 'T' : 'F';
+        result += resultCount.J >= resultCount.P ? 'J' : 'P';
+
+        // Gửi kết quả lên MongoDB
+        if (!test || !test._id) {
+          return alert("Không thể xác định bài test.");
+        }
+
+        await saveResult(result, test._id); // <-- THÊM DÒNG NÀY
+
+        showResult(result); // Hiện kết quả
+        alert('Bạn đã hoàn thành bài test');
+      } else {
+        alert('Vui lòng chọn hết các câu hỏi');
       }
     }
-  });
-
-  // Kiểm tra nếu người dùng đã trả lời đủ câu hỏi
-  if (answers.length === questions.length) {
-    console.log('Submitted answers:', answers);
-
-    // Tính toán kết quả MBTI
-    let result = '';
-    result += resultCount.E > resultCount.I ? 'E' : 'I';
-    result += resultCount.S > resultCount.N ? 'S' : 'N';
-    result += resultCount.T > resultCount.F ? 'T' : 'F';
-    result += resultCount.J > resultCount.P ? 'J' : 'P';
-
-    // Hiển thị kết quả MBTI
-    showResult(result);
-
-    alert('Bạn đã hoàn thành bài test');
-  } else {
-    alert('Vui lòng chọn hết các câu hỏi');
-  }
-}
-
-// Hàm hiển thị kết quả MBTI
-function showResult(result) {
-  // Kết quả MBTI từ người dùng
-  const results = [
-    { "type": "ISTJ", "description": "Kỷ luật, thực tế, đáng tin cậy." },
-    { "type": "ISFJ", "description": "Chu đáo, nhạy cảm, tận tâm." },
-    { "type": "INFJ", "description": "Sâu sắc, sáng tạo, lý tưởng." },
-    { "type": "INTJ", "description": "Chiến lược, độc lập, có tầm nhìn." },
-    { "type": "ISTP", "description": "Linh hoạt, thích thử nghiệm, logic." },
-    { "type": "ISFP", "description": "Nghệ thuật, nhẹ nhàng, sống theo cảm xúc." },
-    { "type": "INFP", "description": "Lãng mạn, sáng tạo, chân thành." },
-    { "type": "INTP", "description": "Phân tích, tò mò, yêu thích tri thức." },
-    { "type": "ESTP", "description": "Hành động nhanh, hướng ngoại, quyết đoán." },
-    { "type": "ESFP", "description": "Hòa đồng, vui vẻ, thích trải nghiệm." },
-    { "type": "ENFP", "description": "Nhiệt huyết, sáng tạo, truyền cảm hứng." },
-    { "type": "ENTP", "description": "Linh hoạt, thông minh, thích tranh luận." },
-    { "type": "ESTJ", "description": "Lãnh đạo, thực tế, có tổ chức." },
-    { "type": "ESFJ", "description": "Tận tâm, quan tâm đến người khác." },
-    { "type": "ENFJ", "description": "Hòa đồng, nhạy bén, truyền động lực." },
-    { "type": "ENTJ", "description": "Quyết đoán, chiến lược, dẫn dắt." }
-  ];
-
-  // Tìm kết quả MBTI dựa trên nhóm tính cách
-  const resultObj = results.find(r => r.type === result);
-
-  let advice = "";
-  // Thêm phần lời khuyên dựa trên kết quả
-  switch (resultObj?.type) {
-    case "ISTJ":
-      advice = "Phát triển kỹ năng giao tiếp và cởi mở với sự thay đổi.";
-      break;
-    case "ISFJ":
-      advice = "Cố gắng tìm thời gian cho bản thân và học cách nói 'không' khi cần.";
-      break;
-    case "INFJ":
-      advice = "Cố gắng tìm sự cân bằng giữa lý tưởng và thực tế trong cuộc sống.";
-      break;
-    case "INTJ":
-      advice = "Cải thiện khả năng giao tiếp và quản lý cảm xúc với người khác.";
-      break;
-    case "ISTP":
-      advice = "Hãy thử mở rộng phạm vi công việc và đón nhận các thử thách mới.";
-      break;
-    case "ISFP":
-      advice = "Tập trung vào việc theo đuổi đam mê và học cách quản lý cảm xúc.";
-      break;
-    case "INFP":
-      advice = "Cố gắng thực tế hơn trong việc thực hiện các mục tiêu và đừng ngại chia sẻ cảm xúc.";
-      break;
-    case "INTP":
-      advice = "Cải thiện kỹ năng giao tiếp và học cách áp dụng lý thuyết vào thực tế.";
-      break;
-    case "ESTP":
-      advice = "Cố gắng phát triển khả năng lắng nghe và hiểu người khác hơn.";
-      break;
-    case "ESFP":
-      advice = "Đừng quên duy trì sự cân bằng giữa công việc và cuộc sống cá nhân.";
-      break;
-    case "ENFP":
-      advice = "Tập trung vào việc duy trì sự ổn định và hoàn thành những mục tiêu dài hạn.";
-      break;
-    case "ENTP":
-      advice = "Cải thiện khả năng lắng nghe và làm việc trong nhóm.";
-      break;
-    case "ESTJ":
-      advice = "Học cách chấp nhận sự thay đổi và phát triển kỹ năng linh hoạt.";
-      break;
-    case "ESFJ":
-      advice = "Học cách tự chăm sóc bản thân và tìm thời gian cho chính mình.";
-      break;
-    case "ENFJ":
-      advice = "Cố gắng duy trì sự cân bằng giữa công việc và cảm xúc của bản thân.";
-      break;
-    case "ENTJ":
-      advice = "Cải thiện kỹ năng quản lý cảm xúc và lắng nghe ý kiến từ người khác.";
-      break;
-    default:
-      advice = "Hãy tiếp tục khám phá và phát triển bản thân!";
-      break;
-  }
-
-  // Hiển thị kết quả MBTI và lời khuyên
-  if (resultObj) {
-    const resultContainer = document.getElementById('result-container');
-
-    // Tạo phần hiển thị kết quả MBTI
-    const resultText = document.createElement('p');
-    resultText.innerHTML = `<strong>${resultObj.type}</strong>: ${resultObj.description}`;
-
-    // Tạo phần lời khuyên
-    const adviceText = document.createElement('p');
-    adviceText.innerHTML = `<strong>Lời khuyên:</strong> ${advice}`;
-
-    // Tạo button "Xem thêm"
-    const xemthemButton = document.createElement('button');
-    xemthemButton.textContent = 'Xem thêm';
-    xemthemButton.style.marginTop = '10px'; // Để khoảng cách giữa button và nội dung
-
-    // Gắn sự kiện khi người dùng nhấn vào button
-    xemthemButton.addEventListener('click', function () {
-        // Chuyển đến trang mới khi nhấn nút
-        window.location.href = "https://example.com"; 
-    });
-
-    // Gắn các phần tử vào container
-    resultContainer.appendChild(resultText);
-    resultContainer.appendChild(adviceText);
-    resultContainer.appendChild(xemthemButton);  
-}
-}
 
 
+    async function saveResult(result, testId) {
+      try {
+        const response = await fetch("http://localhost:8000/v1/results/save-result", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user._id,
+            testId: testId,
+            result: result,
+          }),
+        });
 
+        const data = await response.json();
+        alert(data.message);
+      } catch (error) {
+        console.error("Lỗi khi lưu kết quả:", error);
+      }
+    }
+
+    function showResult(result) {
+      const resultContainer = document.getElementById('result-container');
+      const results = [
+        { "type": "ISTJ", "description": "Kỷ luật, thực tế, đáng tin cậy." },
+        { "type": "ISFJ", "description": "Chu đáo, nhạy cảm, tận tâm." },
+        { "type": "INFJ", "description": "Sâu sắc, sáng tạo, lý tưởng." },
+        { "type": "INTJ", "description": "Chiến lược, độc lập, có tầm nhìn." },
+        { "type": "ISTP", "description": "Linh hoạt, thích thử nghiệm, logic." },
+        { "type": "ISFP", "description": "Nghệ thuật, nhẹ nhàng, sống theo cảm xúc." },
+        { "type": "INFP", "description": "Lãng mạn, sáng tạo, chân thành." },
+        { "type": "INTP", "description": "Phân tích, tò mò, yêu thích tri thức." },
+        { "type": "ESTP", "description": "Hành động nhanh, hướng ngoại, quyết đoán." },
+        { "type": "ESFP", "description": "Hòa đồng, vui vẻ, thích trải nghiệm." },
+        { "type": "ENFP", "description": "Nhiệt huyết, sáng tạo, truyền cảm hứng." },
+        { "type": "ENTP", "description": "Linh hoạt, thông minh, thích tranh luận." },
+        { "type": "ESTJ", "description": "Lãnh đạo, thực tế, có tổ chức." },
+        { "type": "ESFJ", "description": "Tận tâm, quan tâm đến người khác." },
+        { "type": "ENFJ", "description": "Hòa đồng, nhạy bén, truyền động lực." },
+        { "type": "ENTJ", "description": "Quyết đoán, chiến lược, dẫn dắt." }
+      ];
+
+      const resultObj = results.find(r => r.type === result);
+      let advice = "Hãy tiếp tục khám phá và phát triển bản thân!";
+      const adviceMap = {
+        ISTJ: "Phát triển kỹ năng giao tiếp và cởi mở với sự thay đổi.",
+        ISFJ: "Cố gắng tìm thời gian cho bản thân và học cách nói 'không' khi cần.",
+        INFJ: "Cố gắng tìm sự cân bằng giữa lý tưởng và thực tế trong cuộc sống.",
+        INTJ: "Cải thiện khả năng giao tiếp và quản lý cảm xúc với người khác.",
+        ISTP: "Hãy thử mở rộng phạm vi công việc và đón nhận các thử thách mới.",
+        ISFP: "Tập trung vào việc theo đuổi đam mê và học cách quản lý cảm xúc.",
+        INFP: "Cố gắng thực tế hơn trong việc thực hiện các mục tiêu và đừng ngại chia sẻ cảm xúc.",
+        INTP: "Cải thiện kỹ năng giao tiếp và học cách áp dụng lý thuyết vào thực tế.",
+        ESTP: "Cố gắng phát triển khả năng lắng nghe và hiểu người khác hơn.",
+        ESFP: "Đừng quên duy trì sự cân bằng giữa công việc và cuộc sống cá nhân.",
+        ENFP: "Tập trung vào việc duy trì sự ổn định và hoàn thành những mục tiêu dài hạn.",
+        ENTP: "Cải thiện khả năng lắng nghe và làm việc trong nhóm.",
+        ESTJ: "Học cách chấp nhận sự thay đổi và phát triển kỹ năng linh hoạt.",
+        ESFJ: "Học cách tự chăm sóc bản thân và tìm thời gian cho chính mình.",
+        ENFJ: "Cố gắng duy trì sự cân bằng giữa công việc và cảm xúc của bản thân.",
+        ENTJ: "Cải thiện kỹ năng quản lý cảm xúc và lắng nghe ý kiến từ người khác."
+      };
+
+      if (resultObj && adviceMap[resultObj.type]) {
+        advice = adviceMap[resultObj.type];
+      }
+
+      resultContainer.innerHTML = `
+    <p><strong>${resultObj?.type}</strong>: ${resultObj?.description}</p>
+    <p><strong>Lời khuyên:</strong> ${advice}</p>
+    <div class="feedback-section">
+      <h3>Gửi phản hồi của bạn:</h3>
+      <textarea id="feedback-input" rows="4" placeholder="Nhập phản hồi của bạn..."></textarea>
+      <button id="submit-feedback">Gửi phản hồi</button>
+    </div>
+    <div id="feedback-list">
+      <h3>Phản hồi từ người dùng:</h3>
+      <!-- Phản hồi sẽ được hiển thị ở đây -->
+    </div>
+  `;
+
+      // Xử lý gửi phản hồi
+      document.getElementById("submit-feedback").addEventListener("click", async () => {
+        const feedbackInput = document.getElementById("feedback-input");
+        const feedback = feedbackInput.value.trim();
+
+        if (!feedback) {
+          alert("Vui lòng nhập phản hồi trước khi gửi.");
+          return;
+        }
+
+        try {
+          const response = await fetch("http://localhost:8000/v1/feedbacks/save-feedback", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId: user._id,
+              testId: testId,
+              feedback: feedback,
+            }),
+          });
+
+          const data = await response.json();
+          if (response.ok) {
+            alert("Phản hồi của bạn đã được gửi!");
+            feedbackInput.value = ""; // Xóa nội dung sau khi gửi
+            loadFeedbacks(); // Tải lại danh sách phản hồi
+          } else {
+            alert("Không thể gửi phản hồi. Vui lòng thử lại.");
+          }
+        } catch (error) {
+          console.error("Lỗi khi gửi phản hồi:", error);
+          alert("Đã xảy ra lỗi. Vui lòng thử lại sau.");
+        }
+      });
+
+      // Tải danh sách phản hồi
+      loadFeedbacks();
+    }
+
+    async function loadFeedbacks() {
+      try {
+        const response = await fetch(`http://localhost:8000/v1/feedbacks/get-feedbacks/${testId}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          const feedbackList = document.getElementById("feedback-list");
+          feedbackList.innerHTML = `
+        <h3>Phản hồi từ người dùng:</h3>
+        ${data.feedbacks.map(f => `<p><strong>${f.userId.fullname}:</strong> ${f.feedback}</p>`).join("")}
+      `;
+        } else {
+          console.error("Không thể tải phản hồi:", data.message);
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải phản hồi:", error);
+      }
+    }
   </script>
+
 </body>
+
 </html>

@@ -13,12 +13,28 @@
 
 <body>
     <header>
-        <img src="img/logo.png" alt="Logo" />
+        <a href="index.html"><img src="img/logo.png" alt="Logo"></a>
+        <div>Night Owl</div>
         <nav>
             <ul class="menu">
                 <li><a href="index.html">Trang chủ</a></li>
-                <li><a href="#">Bài test tâm lý</a></li>
-                <li><a href="#">Bài test trí tuệ & cảm xúc</a></li>
+                <li>
+                    <a href="#">Bài test tâm lý</a>
+                    <ul class="submenu">
+                        <li><a href="mbti.html" class="test-link">Bài test MBTI</a></li>
+                        <li><a href="disc.html" class="test-link">Bài test DISC</a></li>
+                        <li><a href="holland.html" class="test-link">Bài test HOLLAND</a></li>
+                        <li><a href="bigfive-test.html" class="test-link">Bài test BIG FIVE</a></li>
+                    </ul>
+
+                </li>
+                <li>
+                    <a href="#">Bài test trí tuệ & cảm xúc</a>
+                    <ul class="submenu">
+                        <li><a href="iq.html">Bài test IQ</a></li>
+                        <li><a href="eq.html">Bài test EQ</a></li>
+                    </ul>
+                </li>
                 <li><a href="post.html">Bài viết</a></li>
                 <li id="user-menu">
                     <a href="login.html">Đăng nhập</a>
@@ -60,23 +76,24 @@
 
                 const postContainer = document.getElementById("post-container");
                 postContainer.innerHTML = posts
-                    .map(
-                        (post) => `
-                        <div class="post-item">
+                    .map((post, index) => {
+                        // Ánh xạ bài viết với bài test tương ứng
+                        const testLinks = ["mbti.html", "disc.html", "holland.html", "bigfive-test.html", "iq.html", "eq.html"];
+                        const testLink = testLinks[index % testLinks.length]; // Lặp lại nếu bài viết > số bài test
+
+                        return `
+                    <div class="post-item">
                         <a href="postdetail.html?id=${post._id}">
                             <h2>${post.title}</h2>
                             <img src="${post.image}" alt="${post.title}" class="post-image">
                         </a>
-                    <p><strong>Ngày đăng:</strong> ${new Date(
-                            post.createdAt
-                        ).toLocaleDateString()}</p>
-                    <p>${post.content
-                                .substring(0, 100)
-                                .replace(/\n/g, "<br>")}...</p>
-                    <p><strong>Tác giả:</strong> ${post.author}</p>
-                </div>
-            `
-                    )
+                        <p><strong>Ngày đăng:</strong> ${new Date(post.createdAt).toLocaleDateString()}</p>
+                        <p>${post.content.substring(0, 100).replace(/\n/g, "<br>")}...</p>
+                        <p><strong>Tác giả:</strong> ${post.author}</p>
+                        <a href="${testLink}" class="test-link">Đã đến lúc tìm hiểu, khám phá và trưởng thành cùng bài test!</a>
+                    </div>
+                `;
+                    })
                     .join("");
             } catch (error) {
                 console.error("Lỗi khi lấy bài viết:", error);

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MBTI Personality Test</title>
+  <title>DISC Personality Test</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
     body {
@@ -20,7 +21,6 @@
       background-color: #fff;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
-
 
     .question {
       margin-bottom: 20px;
@@ -49,45 +49,71 @@
     button:hover {
       background-color: steelblue;
     }
+
+    .completed-message {
+      text-align: center;
+      background-color: #f9f9f9;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+
+    .completed-message h2 {
+      color: #4caf50;
+    }
+
+    .completed-message button {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .completed-message button:hover {
+      background-color: #45a049;
+    }
   </style>
 </head>
+
 <body>
-    <header>
-        <img src="img/logo.png" alt="Logo">
-        <div>Night Owl</div>
-        <nav>
-            <ul class="menu">
-              <li><a href="#">Trang chủ</a></li>
-              <li>
-                <a href="#">Bài test tâm lý</a>
-                <ul class="submenu">
-                  <li><a href="#">Bài test MBTI</a></li>
-                  <li><a href="#">Bài test DISC</a></li>
-                  <li><a href="#">Bài test HOLLAND</a></li>
-                  <li><a href="#">Bài test BIG FIVE</a></li>
-                </ul>
-              </li>
-              <li>
-                <a href="#">Bài test trí tuệ & cảm xúc</a>
-                <ul class="submenu">
-                  <li><a href="#">Bài test IQ</a></li>
-                  <li><a href="#">Bài test EQ</a></li>
-                </ul>
-              </li>
-              <li><a href="post.html">Bài viết</a></li>
-              <li id="user-menu">
-                <a href="login.html">Đăng nhập</a>
-              </li>
-            </ul>
-          </nav>
-    </header>
+  <header>
+    <a href="index.html"><img src="img/logo.png" alt="Logo"></a>
+    <div>Night Owl</div>
+    <nav>
+      <ul class="menu">
+        <li><a href="index.html">Trang chủ</a></li>
+        <li>
+          <a href="#">Bài test tâm lý</a>
+          <ul class="submenu">
+            <li><a href="mbti.html" class="test-link">Bài test MBTI</a></li>
+            <li><a href="disc.html" class="test-link">Bài test DISC</a></li>
+            <li><a href="holland.html" class="test-link">Bài test HOLLAND</a></li>
+            <li><a href="bigfive-test.html" class="test-link">Bài test BIG FIVE</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="#">Bài test trí tuệ & cảm xúc</a>
+          <ul class="submenu">
+            <li><a href="iq.html">Bài test IQ</a></li>
+            <li><a href="eq.html">Bài test EQ</a></li>
+          </ul>
+        </li>
+        <li><a href="post.html">Bài viết</a></li>
+        <li id="user-menu">
+          <a href="login.html">Đăng nhập</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
 
   <div class="container">
     <div id="test-container"></div>
-    <button id="submit" onclick="submitTest()">Submit</button>
     <div id="result-container"></div>
   </div>
-  
 
   <footer>
     <div class="menuF">
@@ -117,177 +143,308 @@
   </footer>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Lấy dữ liệu từ API
-      fetch('http://127.0.0.1:8000/v1/test/67f1461cae92bae0f8bb9fed')
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userMenu = document.getElementById("user-menu");
+    const testId = "67f1461cae92bae0f8bb9fed"; // ID bài test DISC
+    let test = null;
+
+    // Cập nhật giao diện người dùng nếu đã đăng nhập
+    if (user) {
+      userMenu.innerHTML = `
+        <a href="#">${user.fullname}</a>
+        <ul class="submenu">
+          <li><a id="logout-btn" href="#">Đăng xuất</a></li>
+        </ul>
+      `;
+      document.getElementById("logout-btn").addEventListener("click", () => {
+        localStorage.removeItem("user");
+        window.location.href = "login.html";
+      });
+    }
+
+    // Khi trang đã tải
+    document.addEventListener('DOMContentLoaded', async function () {
+  if (!user) {
+    alert("Vui lòng đăng nhập để làm bài test.");
+    return window.location.href = "login.html";
+  }
+
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/v1/results/check-result/${user._id}/${testId}`);
+    const data = await response.json();
+
+    if (response.ok) {
+      const testContainer = document.getElementById('test-container');
+      testContainer.innerHTML = `
+        <div class="completed-message">
+          <h2>Bạn đã hoàn thành bài test này!</h2>
+          <p>Kết quả của bạn là: <strong>${data.result.result}</strong></p>
+          <button id="retry-test">Làm lại bài test</button>
+        </div>
+      `;
+
+      // Hiển thị giải thích kết quả
+      showResult(data.result.result);
+
+      // Xử lý khi bấm "Làm lại bài test"
+      document.getElementById('retry-test').addEventListener('click', () => {
+        testContainer.innerHTML = "";
+        fetchTest(testId);
+      });
+    } else {
+      fetchTest(testId);
+    }
+  } catch (error) {
+    console.error("Lỗi khi kiểm tra kết quả bài test:", error);
+    alert("Đã xảy ra lỗi. Vui lòng thử lại sau.");
+  }
+});
+
+    // Gọi API để lấy bài test
+    function fetchTest(testId) {
+      fetch(`http://127.0.0.1:8000/v1/test/${testId}`)
         .then(response => response.json())
         .then(data => {
+          test = data;
           renderTest(data);
         })
         .catch(error => console.error('Error fetching the test data:', error));
-    });
+    }
 
     function renderTest(testData) {
-  const testContainer = document.getElementById('test-container');
+      const testContainer = document.getElementById('test-container');
+      const title = document.createElement('h2');
+      title.innerText = testData.title;
+      testContainer.appendChild(title);
 
-  const title = document.createElement('h2');
-  title.innerText = testData.title;
-  testContainer.appendChild(title);
+      testData.questions.forEach((question, index) => {
+        const questionElement = document.createElement('div');
+        questionElement.classList.add('question');
 
-  testData.questions.forEach((question, index) => {
-    const questionElement = document.createElement('div');
-    questionElement.classList.add('question');
+        const questionText = document.createElement('p');
+        questionText.innerText = question.question;
+        questionElement.appendChild(questionText);
 
-    const questionText = document.createElement('p');
-    questionText.innerText = question.question;
-    questionElement.appendChild(questionText);
+        const optionsList = document.createElement('ul');
+        optionsList.classList.add('options');
 
-    const optionsList = document.createElement('ul');
-    optionsList.classList.add('options');
+        question.options.forEach(option => {
+          const optionItem = document.createElement('li');
+          const optionLabel = document.createElement('label');
+          const optionInput = document.createElement('input');
+          optionInput.type = 'radio';
+          optionInput.name = 'question-' + index;
+          optionInput.value = option.value;
+          optionLabel.appendChild(optionInput);
+          optionLabel.appendChild(document.createTextNode(option.text));
+          optionItem.appendChild(optionLabel);
+          optionsList.appendChild(optionItem);
+        });
 
-    question.options.forEach(option => {
-      const optionItem = document.createElement('li');
-      const optionLabel = document.createElement('label');
-      const optionInput = document.createElement('input');
-      optionInput.type = 'radio';
-      optionInput.name = 'question-' + index;
-      optionInput.value = option.value;
-      optionLabel.appendChild(optionInput);
-      optionLabel.appendChild(document.createTextNode(option.text));
-      optionItem.appendChild(optionLabel);
-      optionsList.appendChild(optionItem);
-    });
-
-    questionElement.appendChild(optionsList);
-    testContainer.appendChild(questionElement);
-  });
-}
-
-
-
-function submitTest() {
-  const answers = [];
-  const questions = document.querySelectorAll('.question');
-  const resultCount = { D: 0, I: 0, S: 0, C: 0 };
-
-  questions.forEach((question, index) => {
-    const selectedOption = question.querySelector('input[type="radio"]:checked');
-    if (selectedOption) {
-      const value = parseInt(selectedOption.value);
-      const trait = selectedOption.dataset.trait;
-
-      answers.push({
-        questionIndex: index,
-        answer: selectedOption.value,
-        trait: trait
+        questionElement.appendChild(optionsList);
+        testContainer.appendChild(questionElement);
       });
 
-      if (trait && resultCount.hasOwnProperty(trait)) {
-        resultCount[trait] += value;
+      const submitBtn = document.createElement("button");
+      submitBtn.textContent = "Gửi bài test";
+      submitBtn.addEventListener("click", submitTest);
+      testContainer.appendChild(submitBtn);
+    }
+
+    async function submitTest() {
+      const answers = [];
+      const questions = document.querySelectorAll('.question');
+      const resultCount = { D: 0, I: 0, S: 0, C: 0 };
+
+      questions.forEach((question, index) => {
+        const selectedOption = question.querySelector('input[type="radio"]:checked');
+        if (selectedOption) {
+          answers.push({
+            questionIndex: index,
+            answer: selectedOption.value
+          });
+
+          // Đếm số lượng từng trait
+          const trait = selectedOption.value.toUpperCase();
+          if (resultCount.hasOwnProperty(trait)) {
+            resultCount[trait]++;
+          }
+        }
+      });
+
+      if (answers.length === questions.length) {
+        console.log('Submitted answers:', answers);
+
+        // Ghép nhóm đối lập lại
+        const sortedTraits = Object.entries(resultCount).sort((a, b) => b[1] - a[1]);
+        const mainTrait = sortedTraits[0][0];
+        const secondTrait = sortedTraits[1][0];
+        const result = mainTrait + secondTrait;
+
+        // Gửi kết quả lên MongoDB
+        if (!test || !test._id) {
+          return alert("Không thể xác định bài test.");
+        }
+
+        await saveResult(result, test._id);
+
+        showResult(result); // Hiện kết quả
+        alert('Bạn đã hoàn thành bài test');
+      } else {
+        alert('Vui lòng chọn hết các câu hỏi');
       }
     }
-  });
 
-  if (answers.length === questions.length) {
-    console.log('Submitted answers:', answers);
-    const sortedTraits = Object.entries(resultCount).sort((a, b) => b[1] - a[1]);
-    const mainTrait = sortedTraits[0][0];
-    const secondTrait = sortedTraits[1][0];
+    async function saveResult(result, testId) {
+      try {
+        const response = await fetch("http://localhost:8000/v1/results/save-result", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user._id,
+            testId: testId,
+            result: result,
+          }),
+        });
 
-    // Gộp thành loại DISC kép, VD: DI, DC, v.v.
-    const fullType = (mainTrait + secondTrait).toUpperCase();
-
-    showResultDISC(fullType);
-    alert('Bạn đã hoàn thành bài test');
-  } else {
-    alert('Vui lòng chọn hết các câu hỏi');
-  }
-}
-
-// Hàm hiển thị kết quả từ danh sách DISC đầy đủ của bạn
-function showResultDISC(type) {
-  const results = [
-    {
-      "type": "D",
-      "description": "Người chiến thắng (D): tự tin và đặt trọng tâm vào việc hoàn thành các kết quả cuối cùng."
-    },
-    {
-      "type": "DC",
-      "description": "Người thách thức (DC): siêng năng, quyết tâm, sáng tạo và luôn đưa ra những tiêu chuẩn cao cho bản thân và những người xung quanh."
-    },
-    {
-      "type": "DI",
-      "description": "Người tìm kiếm (DI): hướng tới kết quả và tạo ảnh hưởng với người khác thông qua hành động."
-    },
-    {
-      "type": "ID",
-      "description": "Người chấp nhận rủi ro (ID): năng lượng, thích phiêu lưu, tham vọng và muốn tạo ảnh hưởng đến người khác."
-    },
-    {
-      "type": "I",
-      "description": "Người Nhiệt tình (I): cởi mở và chú trọng vào các mối quan hệ cũng như khả năng tạo ảnh hưởng và thuyết phục người khác."
-    },
-    {
-      "type": "IS",
-      "description": "Người Bạn thân thiết (IS): thân thiện, hòa đồng, hỗ trợ và có khả năng tiếp nhận vấn đề theo hướng lạc quan."
-    },
-    {
-      "type": "S",
-      "description": "Người Hòa giải (S): đáng tin cậy và coi trọng sự trung thành."
-    },
-    {
-      "type": "SI",
-      "description": "Người cộng tác (SI): thân thiện, hợp tác, khuyến khích và thu hút mọi người bằng sự đồng cảm và kiên nhẫn."
-    },
-    {
-      "type": "SC",
-      "description": "Kỹ thuật viên (SC): thoải mái, kiên nhẫn, nhận được sự tin cậy từ mọi người thông qua khả năng tự chủ và giao tiếp."
-    },
-    {
-      "type": "C",
-      "description": "Nhà phân tích (C): tập trung vào sự chính xác, ổn định, chân thành và khéo léo."
-    },
-    {
-      "type": "CS",
-      "description": "Người hiền lành (CS): thận trọng, trật tự, chính xác thông qua tính thực tế và chi tiết."
-    },
-    {
-      "type": "CD",
-      "description": "Người cầu toàn (CD): kiên quyết, tư duy khách quan, kỷ luật và tuân theo các quy chuẩn nghiêm ngặt."
+        const data = await response.json();
+        alert(data.message);
+      } catch (error) {
+        console.error("Lỗi khi lưu kết quả:", error);
+      }
     }
-  ];
 
-  const resultContainer = document.getElementById('result-container');
-  resultContainer.innerHTML = '';
+    function showResult(result) {
+      const resultContainer = document.getElementById('result-container');
+      const results = [
+        {
+          "type": "D",
+          "description": "Người chiến thắng (D): tự tin và đặt trọng tâm vào việc hoàn thành các kết quả cuối cùng."
+        },
+        {
+          "type": "DC",
+          "description": "Người thách thức (DC): siêng năng, quyết tâm, sáng tạo và luôn đưa ra những tiêu chuẩn cao cho bản thân và những người xung quanh."
+        },
+        {
+          "type": "DI",
+          "description": "Người tìm kiếm (DI): hướng tới kết quả và tạo ảnh hưởng với người khác thông qua hành động."
+        },
+        {
+          "type": "ID",
+          "description": "Người chấp nhận rủi ro (ID): năng lượng, thích phiêu lưu, tham vọng và muốn tạo ảnh hưởng đến người khác."
+        },
+        {
+          "type": "I",
+          "description": "Người Nhiệt tình (I): cởi mở và chú trọng vào các mối quan hệ cũng như khả năng tạo ảnh hưởng và thuyết phục người khác."
+        },
+        {
+          "type": "IS",
+          "description": "Người Bạn thân thiết (IS): thân thiện, hòa đồng, hỗ trợ và có khả năng tiếp nhận vấn đề theo hướng lạc quan."
+        },
+        {
+          "type": "S",
+          "description": "Người Hòa giải (S): đáng tin cậy và coi trọng sự trung thành."
+        },
+        {
+          "type": "SI",
+          "description": "Người cộng tác (SI): thân thiện, hợp tác, khuyến khích và thu hút mọi người bằng sự đồng cảm và kiên nhẫn."
+        },
+        {
+          "type": "SC ",
+          "description": "Kỹ thuật viên (SC): thoải mái, kiên nhẫn, nhận được sự tin cậy từ mọi người thông qua khả năng tự chủ và giao tiếp."
+        },
+        {
+          "type": "C",
+          "description": "Nhà phân tích (C): tập trung vào sự chính xác, ổn định, chân thành và khéo léo."
+        },
+        {
+          "type": "CS",
+          "description": "Người hiền lành (CS): thận trọng, trật tự, chính xác thông qua tính thực tế và chi tiết."
+        },
+        {
+          "type": "CD",
+          "description": "Người cầu toàn (CD): kiên quyết, tư duy khách quan, kỷ luật và tuân theo các quy chuẩn nghiêm ngặt."
+        },
+        {
+          "type": "SD",
+          "description": "Người hòa hợp (SD): thân thiện, hòa đồng và có khả năng làm việc nhóm tốt."
+        }
+      ];
 
-  // Tìm kết quả chính xác
-  let resultObj = results.find(r => r.type === type);
+      const resultObj = results.find(r => r.type === result);
+      if (resultObj) {
+        resultContainer.innerHTML = `
+          <p><strong>${resultObj.type}</strong>: ${resultObj.description}</p>
+        <div class="feedback-section">
+      <h3>Gửi phản hồi của bạn:</h3>
+      <textarea id="feedback-input" rows="4" placeholder="Nhập phản hồi của bạn..."></textarea>
+      <button id="submit-feedback">Gửi phản hồi</button>
+    </div>
+    <div id="feedback-list">
+      <h3>Phản hồi từ người dùng:</h3>
+      <!-- Phản hồi sẽ được hiển thị ở đây -->
+    </div>
+  `;
 
-  // Nếu không có DISC kép như "DI" thì fallback về D, I, S hoặc C
-  if (!resultObj) {
-    const fallback = type[0]; // lấy chữ đầu
-    resultObj = results.find(r => r.type === fallback);
-  }
+      // Xử lý gửi phản hồi
+      document.getElementById("submit-feedback").addEventListener("click", async () => {
+        const feedbackInput = document.getElementById("feedback-input");
+        const feedback = feedbackInput.value.trim();
 
-  if (resultObj) {
-    const resultText = document.createElement('p');
-    resultText.innerHTML = `<strong>${resultObj.type}</strong>: ${resultObj.description}`;
+        if (!feedback) {
+          alert("Vui lòng nhập phản hồi trước khi gửi.");
+          return;
+        }
 
-    const xemthemButton = document.createElement('button');
-    xemthemButton.textContent = 'Xem thêm';
-    xemthemButton.style.marginTop = '10px';
-    xemthemButton.addEventListener('click', function () {
-      window.location.href = "https://example.com";
-    });
+        try {
+          const response = await fetch("http://localhost:8000/v1/feedbacks/save-feedback", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId: user._id,
+              testId: testId,
+              feedback: feedback,
+            }),
+          });
 
-    resultContainer.appendChild(resultText);
-    resultContainer.appendChild(xemthemButton);
-  } else {
-    resultContainer.textContent = "Không tìm thấy kết quả phù hợp.";
-  }
-}
+          const data = await response.json();
+          if (response.ok) {
+            alert("Phản hồi của bạn đã được gửi!");
+            feedbackInput.value = ""; // Xóa nội dung sau khi gửi
+            loadFeedbacks(); // Tải lại danh sách phản hồi
+          } else {
+            alert("Không thể gửi phản hồi. Vui lòng thử lại.");
+          }
+        } catch (error) {
+          console.error("Lỗi khi gửi phản hồi:", error);
+          alert("Đã xảy ra lỗi. Vui lòng thử lại sau.");
+        }
+      });
 
+      // Tải danh sách phản hồi
+      loadFeedbacks();
+    }
 
+    async function loadFeedbacks() {
+      try {
+        const response = await fetch(`http://localhost:8000/v1/feedbacks/get-feedbacks/${testId}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          const feedbackList = document.getElementById("feedback-list");
+          feedbackList.innerHTML = `
+        <h3>Phản hồi từ người dùng:</h3>
+        ${data.feedbacks.map(f => `<p><strong>${f.userId.fullname}:</strong> ${f.feedback}</p>`).join("")}
+      `;
+        } else {
+          console.error("Không thể tải phản hồi:", data.message);
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải phản hồi:", error);
+      }
+    }
+    }
   </script>
 </body>
+
 </html>
