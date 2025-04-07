@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      background-color: #f4f6f8;
+    }
+
+    .sidebar {
+      width: 220px;
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      padding: 20px;
+    }
+
+    .sidebar h2 {
+      margin-bottom: 30px;
+      font-size: 24px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #ecf0f1;
+      text-decoration: none;
+      margin-bottom: 15px;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      color: #1abc9c;
+    }
+
+    .main {
+      flex-grow: 1;
+      padding: 20px;
+    }
+
+    .header {
+      font-size: 28px;
+      margin-bottom: 20px;
+      color: #34495e;
+    }
+
+    .content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>Admin Panel</h2>
+    <a href="admin.html">🏠 Trang chủ</a>
+    <a href="user.html">👤 Quản lý người dùng</a>
+    <a href="feedback.html">📊 Báo cáo</a>
+    <a href="#" onclick="logout()">🚪 Đăng xuất</a>
+  </div>
+
+  <div class="main">
+    <div class="header">Chào mừng, Admin!</div>
+    <div class="content">
+        <h3>Danh sách phản hồi</h3>
+        <table id="feedback-table" border="1" cellpadding="10" cellspacing="0" style="width: 100%; margin-top: 10px; border-collapse: collapse;">
+          <thead style="background-color: #f1f1f1;">
+            <tr>
+              <th>Người dùng</th>
+              <th>Email</th>
+              <th>Bài test</th>
+              <th>Phản hồi</th>
+              <th>Thời gian</th>
+            </tr>
+          </thead>
+          <tbody id="feedback-table-body">
+            <tr><td colspan="5" style="text-align: center;">Đang tải dữ liệu...</td></tr>
+          </tbody>
+        </table>
+      </div>
+  </div>
+
+  <script>
+    function logout() {
+      localStorage.removeItem("user");
+      window.location.href = "login.html";
+    }
+
+    async function fetchFeedbacks() {
+  const tableBody = document.getElementById("feedback-table-body");
+
+  try {
+    const res = await fetch("http://localhost:8000/v1/feedbacks/get-all-feedbacks");
+    const data = await res.json();
+    const feedbacks = data.feedbacks;
+
+    tableBody.innerHTML = "";
+
+    feedbacks.forEach(item => {
+      // Kiểm tra testId và gán tên bài test tương ứng
+      let testTitle = "Không rõ";  // Mặc định nếu không có testId phù hợp
+
+      if (item.testId === "67f12357f51ce8b845d49538") {
+        testTitle = "MBTI";
+      } else if (item.testId === "67f1461cae92bae0f8bb9fed") {
+        testTitle = "DISC";
+      } else if (item.testId === "67f14b42ae92bae0f8bb9fef") {
+        testTitle = "Holland";
+      } else if (item.testId === "67f22baed22a5af8015cf86b") {
+        testTitle = "Big Five";
+      } else if (item.testId === "67f230fed22a5af8015cf86d") {
+        testTitle = "IQ";
+      } else if (item.testId === "67f23660d22a5af8015cf86f") {
+        testTitle = "EQ";
+      }
+
+      const createdAt = new Date(item.createdAt).toLocaleString("vi-VN");
+
+      // Tạo dòng mới cho bảng
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${item.userId?.fullname || "Không rõ"}</td>
+        <td>${item.userId?.email || "Không rõ"}</td>
+        <td>${testTitle}</td>
+        <td>${item.feedback}</td>
+        <td>${createdAt}</td>
+      `;
+      tableBody.appendChild(row);
+    });
+  } catch (err) {
+    console.error("Lỗi khi lấy phản hồi:", err);
+    tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">Không thể tải dữ liệu phản hồi.</td></tr>`;
+  }
+}
+
+window.onload = function () {
+  fetchFeedbacks();    // Gọi API phản hồi khi trang được tải
+};
+
+  </script>
+</body>
+</html>

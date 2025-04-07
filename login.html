@@ -190,17 +190,28 @@
       }
 
       try {
-        const response = await axios.post(`${backendUrl}/login`, {
-          email,
-          password,
-        });
-        alert("Đăng nhập thành công!");
-        localStorage.setItem("user", JSON.stringify(response.data.user)); // Lưu thông tin người dùng
-        window.location.href = "index.html"; // Chuyển về trang chủ
-      } catch (error) {
-        alert("Đăng nhập thất bại!");
-        console.error(error.response?.data || error.message);
-      }
+  const response = await axios.post(`${backendUrl}/login`, {
+    email,
+    password,
+  });
+
+  alert(response.data.message);
+  const user = response.data.user;
+
+  // Lưu thông tin user
+  localStorage.setItem("user", JSON.stringify(user));
+
+  // Kiểm tra nếu là admin thì chuyển sang trang admin.html
+  if (user.admin === true) {
+    window.location.href = "admin.html";
+  } else {
+    window.location.href = "index.html";
+  }
+} catch (error) {
+  alert(error.response?.data?.message || "Đăng nhập thất bại!");
+  console.error(error.response?.data || error.message);
+}
+
     });
   </script>
 

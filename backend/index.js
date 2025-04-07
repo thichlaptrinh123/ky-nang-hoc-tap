@@ -7,6 +7,8 @@ const testRoutes = require("./routes/test");
 const { Post } = require("./model/model"); // Import model Post
 require('./model/testModel');
 
+
+
 dotenv.config();
 
 const app = express();
@@ -14,39 +16,19 @@ app.use(express.json());
 
 // Cấu hình CORS
 app.use(cors({
-  origin: "http://127.0.0.1:5500", // Cho phép frontend truy cập
+  origin: "https://tracnghiemtinhcach.online", // Cho phép frontend truy cập
   methods: ["GET", "POST", "PUT", "DELETE"], // Các phương thức được phép
   credentials: true, // Nếu cần gửi cookie
 }));
 
 // Kết nối MongoDB
 mongoose
-  .connect(process.env.MONGOOSE_URL, {
+  .connect("mongodb+srv://root:Ab123123@cluster0.kvcmndo.mongodb.net/Phong2DB?retryWrites=true&w=majority&appName=Cluster0", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
   .then(async () => {
     console.log("Kết nối thành công đến MongoDB");
-
-    // Kiểm tra và thêm bài viết mẫu nếu collection posts trống
-    const postCount = await Post.countDocuments();
-    if (postCount === 0) {
-      await Post.insertMany([
-        {
-          title: "Bài viết đầu tiên",
-          image: "../img/post1.jpg",
-          content: "Đây là nội dung của bài viết đầu tiên.",
-          author: "Admin",
-        },
-        {
-          title: "Bài viết thứ hai",
-          image: "../img/post2.jpg",
-          content: "Đây là nội dung của bài viết thứ hai.",
-          author: "Admin",
-        },
-      ]);
-      console.log("Đã thêm bài viết mẫu vào collection posts.");
-    }
   })
   .catch((error) => console.error("Lỗi kết nối MongoDB:", error));
 

@@ -49,4 +49,18 @@ router.get("/get-feedbacks/:testId", async (req, res) => {
   }
 });
 
+
+// Lấy tất cả phản hồi
+router.get("/get-all-feedbacks", async (req, res) => {
+  try {
+    const feedbacks = await Feedback.find().populate("userId", "fullname email");
+
+    res.status(200).json({ feedbacks });
+  } catch (error) {
+    console.error("Lỗi khi lấy phản hồi:", error);
+    res.status(500).json({ message: "Lỗi server", error });
+  }
+});
+
+
 module.exports = router;
