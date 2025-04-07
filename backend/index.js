@@ -11,14 +11,21 @@ require('./model/testModel');
 
 dotenv.config();
 
-const app = express();
-app.use(express.json());
+const allowedOrigins = [
+  "https://tracnghiemtinhcach.online",
+  "https://lively-froyo-728981.netlify.app"
+];
 
-// Cấu hình CORS
 app.use(cors({
-  origin: "https://tracnghiemtinhcach.online", // Cho phép frontend truy cập
-  methods: ["GET", "POST", "PUT", "DELETE"], // Các phương thức được phép
-  credentials: true, // Nếu cần gửi cookie
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
 }));
 
 // Kết nối MongoDB
