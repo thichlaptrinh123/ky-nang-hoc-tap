@@ -11,21 +11,10 @@ require('./model/testModel');
 
 dotenv.config();
 
-const allowedOrigins = [
-  "https://tracnghiemtinhcach.online",
-  "https://lively-froyo-728981.netlify.app"
-];
-
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
+  origin: "https://tracnghiemtinhcach.online", // Cho phép frontend truy cập
+  methods: ["GET", "POST", "PUT", "DELETE"], // Các phương thức được phép
+  credentials: true, // Nếu cần gửi cookie
 }));
 
 // Kết nối MongoDB
